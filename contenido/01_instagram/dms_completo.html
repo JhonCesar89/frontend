@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DForest - Respuestas DM</title>
+    <link rel="icon" href="../../assets/logos/dforest-logo.ico">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%); color: #ffffff; padding: 0; margin: 0; min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%); animation: pulse 8s ease-in-out infinite; pointer-events: none; z-index: 0; }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+        .container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+        .header { text-align: center; margin-bottom: 60px; animation: fadeInDown 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        .logo { font-size: 4em; filter: drop-shadow(0 10px 30px rgba(0, 212, 255, 0.5)); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .header h1 { font-size: 3.5em; font-weight: 800; background: linear-gradient(135deg, #00d4ff 0%, #0084ff 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin: 0; letter-spacing: -2px; line-height: 1.1; }
+        .subtitle { font-size: 1.2em; color: #aaa; margin-top: 10px; font-weight: 400; }
+        .badge { display: inline-flex; align-items: center; gap: 10px; background: rgba(0, 212, 255, 0.15); border: 2px solid #00d4ff; padding: 12px 30px; border-radius: 30px; font-weight: 700; font-size: 1.1em; margin-top: 20px; animation: pulse-badge 2s ease-in-out infinite; box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3); }
+        @keyframes pulse-badge { 0%, 100% { transform: scale(1); box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3); } 50% { transform: scale(1.05); box-shadow: 0 15px 50px rgba(0, 212, 255, 0.5); } }
+        .badge-number { font-size: 1.4em; color: #00d4ff; }
+        .dm-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border-radius: 20px; padding: 30px; margin: 25px 0; border-left: 6px solid #00d4ff; animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards; transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); position: relative; overflow: hidden; }
+        .dm-card:hover { transform: translateY(-8px) translateX(5px); box-shadow: 0 30px 60px rgba(0, 212, 255, 0.3), 0 0 0 1px rgba(0, 212, 255, 0.2); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
+        .dm-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .dm-number { background: linear-gradient(135deg, #00d4ff, #0084ff); color: #000; font-weight: 800; padding: 8px 16px; border-radius: 12px; font-size: 0.9em; box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4); }
+        .dm-title { color: #00d4ff; font-size: 1.5em; font-weight: 700; flex: 1; }
+        .dm-content { line-height: 1.9; color: #e0e0e0; font-size: 1.05em; margin: 15px 0; white-space: pre-line; }
+        .promo-highlight { background: rgba(255, 215, 0, 0.15); border: 2px solid #ffd700; padding: 15px; margin-top: 15px; border-radius: 12px; color: #ffd700; font-weight: 700; }
+        .copy-btn { background: linear-gradient(135deg, #00d4ff 0%, #0084ff 100%); color: #000; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 700; font-size: 0.95em; cursor: pointer; transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4); margin-top: 15px; }
+        .copy-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(0, 212, 255, 0.6); }
+        .back-btn { position: fixed; top: 30px; left: 30px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 12px 25px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; z-index: 100; }
+        .back-btn:hover { background: rgba(0, 212, 255, 0.2); border-color: #00d4ff; transform: translateX(-5px); }
+        .copy-notification { position: fixed; bottom: 40px; right: 40px; background: linear-gradient(135deg, #00d4ff, #0084ff); color: #000; padding: 20px 30px; border-radius: 15px; font-weight: 700; font-size: 1.1em; box-shadow: 0 20px 50px rgba(0, 212, 255, 0.5); z-index: 1000; animation: slideInRight 0.5s cubic-bezier(0.22, 1, 0.36, 1), slideOutRight 0.5s cubic-bezier(0.22, 1, 0.36, 1) 2.5s forwards; }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideOutRight { to { opacity: 0; transform: translateX(100px); } }
+        @media (max-width: 768px) { .header h1 { font-size: 2.5em; } .dm-card { padding: 20px; } .dm-title { font-size: 1.3em; } .back-btn { top: 15px; left: 15px; padding: 10px 20px; } }
+    </style>
+</head>
+<body>
+    <a href="../../PANEL_COMPLETO.html" class="back-btn">← Volver al Panel</a>
+    <div class="container">
+        <div class="header">
+            <div class="logo">💬</div>
+            <h1>RESPUESTAS DM</h1>
+            <p class="subtitle">Respuestas rápidas para Instagram</p>
+            <div class="badge"><span class="badge-number">10</span><span>RESPUESTAS LISTAS</span></div>
+        </div>
+
+        <div class="dm-card" style="animation-delay: 0.1s">
+            <div class="dm-header"><div class="dm-number">DM #1</div><div class="dm-title">💰 Precios</div></div>
+            <div class="dm-content">Hola! Los precios son:
+
+🎟️ Individual: $30.000
+
+🔥 PROMO NUEVA:
+2 entradas x $40.000
+($20.000 cada una)
+
+📦 PROMOS GRUPALES:
+→ 4 personas: $100.000
+→ 4 personas + Gin: $120.000
+
+💡 Si comprás por transferencia solo pagas 2% comisión vs 15% online
+
+Link: https://www.revamos.com/eventos/dforest-outdoor-poolparty-historica/Enzo</div>
+            <div class="promo-highlight">🔥 PROMO ACTIVA: 2x$40.000 (desde hoy)</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Respuesta</button>
+        </div>
+
+        <div class="dm-card" style="animation-delay: 0.2s">
+            <div class="dm-header"><div class="dm-number">DM #2</div><div class="dm-title">📍 Ubicación y Transporte</div></div>
+            <div class="dm-content">El evento es en Caning, Zona Sur
+A 40 min de CABA
+
+🚗 Hay estacionamiento en el lugar
+🚐 Sale combi desde capital (te paso info cuando se acerque)
+
+Horario: 10 a 20hs
+Domingo 11 Enero 2026</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Respuesta</button>
+        </div>
+
+        <div class="dm-card" style="animation-delay: 0.3s">
+            <div class="dm-header"><div class="dm-number">DM #3</div><div class="dm-title">✨ Qué Incluye</div></div>
+            <div class="dm-content">El evento incluye:
+
+✓ Pileta climatizada
+✓ Zona chill y zona de acampe
+✓ Barras y comidas
+✓ Sonido RCF (de primera)
+✓ Vestuarios
+✓ Asistencia médica
+✓ Stands y marcas
+
+Es un spot nuevo, está tremendo el lugar 🌴</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Respuesta</button>
+        </div>
+
+        <div class="dm-card" style="animation-delay: 0.4s">
+            <div class="dm-header"><div class="dm-number">DM #4</div><div class="dm-title">🎧 Lineup</div></div>
+            <div class="dm-content">El lineup es histórico:
+
+🎧 PFIRTER
+🎧 SGALIA
+(Primera vez juntos en años!)
+
++ RDKS B2B Nano
++ Nawe B2B Aleto
++ Nahu G B2B Braian Comparada
+
+House y techno todo el día
+Todo con vinilos 🔥</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Respuesta</button>
+        </div>
+
+        <div class="dm-card" style="animation-delay: 0.5s">
+            <div class="dm-header"><div class="dm-number">DM #5</div><div class="dm-title">📅 Consulta Nueva Fecha</div></div>
+            <div class="dm-content">Hola! Sí, el evento se reprogramó del 21/12 al 11/01/2026 por temas climáticos 🌧️
+
+✅ Las entradas ya compradas SIGUEN VÁLIDAS
+✅ Si compraste para el 21/12, tu entrada sirve para el 11/01
+
+Mismo lineup, mismo lugar, mejor fecha 🌴</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Respuesta</button>
+        </div>
+
+        <div class="dm-card" style="animation-delay: 0.6s">
+            <div class="dm-header"><div class="dm-number">DM #6</div><div class="dm-title">🎁 Sorteo (FINALIZADO)</div></div>
+            <div class="dm-content">Hola! El sorteo ya finalizó 🎁
+
+Los ganadores fueron:
+🏆 1er lugar: [Nombre ganador]
+🏆 2do lugar: [Nombre ganador]
+🏆 3er lugar: [Nombre ganador]
+
+¡Pero todavía podés conseguir tu entrada!
+
+🔥 PROMO NUEVA:
+2 entradas x $40.000
+
+Link: https://www.revamos.com/eventos/dforest-outdoor-poolparty-historica/Enzo</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Respuesta</button>
+        </div>
+
+        <div class="dm-card" style="animation-delay: 0.7s">
+            <div class="dm-header"><div class="dm-number">DM #7</div><div class="dm-title">⏰ Horarios</div></div>
+            <div class="dm-content">Los horarios son:
+
+📅 Domingo 11 Enero 2026
+⏰ 10:00 a 20:00hs
+
+Puertas abren a las 10hs
+El evento es de día, al aire libre
+
+Recomendamos llegar temprano para disfrutar toda la jornada 🌞</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Respuesta</button>
+        </div>
+
+        <div class="dm-card" style="animation-delay: 0.8s">
+            <div class="dm-header"><div class="dm-number">DM #8</div><div class="dm-title">🎟️ Cómo Comprar</div></div>
+            <div class="dm-content">Para comprar:
+
+1️⃣ Entrá al link en bio
+2️⃣ Elegí tu entrada/promo
+3️⃣ Completá datos
+4️⃣ Pagá por transferencia (2% comisión) o tarjeta
+
+Te llega el QR por mail
+Guardalo para el día del evento
+
+Link: https://www.revamos.com/eventos/dforest-outdoor-poolparty-historica/Enzo</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Respuesta</button>
+        </div>
+
+        <div class="dm-card" style="animation-delay: 0.9s">
+            <div class="dm-header"><div class="dm-number">DM #9</div><div class="dm-title">👥 Promo Grupal</div></div>
+            <div class="dm-content">Las promos grupales son:
+
+📦 4 personas: $100.000
+   ($25.000 cada una)
+
+📦 4 + Gin Reventao: $120.000
+   (incluye botella + tónicas)
+
+🔥 NUEVA: 2x$40.000
+   ($20.000 cada una)
+
+Armá tu grupo y asegurá los lugares!</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Respuesta</button>
+        </div>
+
+        <div class="dm-card" style="animation-delay: 1s">
+            <div class="dm-header"><div class="dm-number">DM #10</div><div class="dm-title">❓ Consulta General</div></div>
+            <div class="dm-content">Hola! 👋
+
+DForest Poolparty
+Domingo 11 Enero 2026
+10-20hs · Caning, Zona Sur
+
+PFIRTER + SGALIA + más
+
+Entrada individual: $30.000
+🔥 2 entradas: $40.000
+
+¿Qué querés saber específicamente? 😊</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Respuesta</button>
+        </div>
+    </div>
+
+    <script>
+        function copiar(btn) {
+            const card = btn.closest('.dm-card');
+            const content = card.querySelector('.dm-content').textContent.trim();
+            navigator.clipboard.writeText(content).then(() => {
+                btn.textContent = '✓ ¡Copiado!';
+                const notification = document.createElement('div');
+                notification.className = 'copy-notification';
+                notification.textContent = '✓ Respuesta copiada al portapapeles';
+                document.body.appendChild(notification);
+                setTimeout(() => {
+                    btn.innerHTML = '📋 Copiar Respuesta';
+                    notification.remove();
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>

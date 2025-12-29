@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DForest - Captions Completos</title>
+    <link rel="icon" href="../assets/logos/dforest-logo.ico">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Animación de fondo con partículas */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        
+        /* Header con logo */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            font-size: 4em;
+            filter: drop-shadow(0 10px 30px rgba(0, 255, 136, 0.5));
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .header h1 {
+            font-size: 3.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #aaa;
+            margin-top: 10px;
+            font-weight: 400;
+        }
+        
+        /* Badge contador */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 255, 136, 0.15);
+            border: 2px solid #00ff88;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-top: 20px;
+            animation: pulse-badge 2s ease-in-out infinite;
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
+        }
+        
+        @keyframes pulse-badge {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 50px rgba(0, 255, 136, 0.5); }
+        }
+        
+        .badge-number {
+            font-size: 1.4em;
+            color: #00ff88;
+        }
+        
+        /* Post cards */
+        .post-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            border-left: 6px solid #00ff88;
+            animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-8px) translateX(5px);
+            box-shadow: 
+                0 30px 60px rgba(0, 255, 136, 0.3),
+                0 0 0 1px rgba(0, 255, 136, 0.2);
+        }
+        
+        .post-card:hover::before {
+            opacity: 1;
+        }
+        
+        .post-card:nth-child(even) {
+            animation-delay: 0.1s;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .post-number {
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #000;
+            font-weight: 800;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+        }
+        
+        .post-title {
+            color: #00d4ff;
+            font-size: 1.8em;
+            font-weight: 700;
+            flex: 1;
+        }
+        
+        .post-content {
+            line-height: 1.9;
+            color: #e0e0e0;
+            font-size: 1.05em;
+            margin: 20px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hashtags {
+            color: #00ff88;
+            font-weight: 600;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Botón de copiar */
+        .copy-btn {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .copy-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: left 0.5s;
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.6);
+        }
+        
+        .copy-btn:hover::before {
+            left: 100%;
+        }
+        
+        .copy-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .copy-btn.copied {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+        }
+        
+        /* Notificación de copiado */
+        .copy-notification {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #000;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1em;
+            box-shadow: 0 20px 50px rgba(0, 255, 136, 0.5);
+            z-index: 1000;
+            animation: slideInRight 0.5s cubic-bezier(0.22, 1, 0.36, 1), slideOutRight 0.5s cubic-bezier(0.22, 1, 0.36, 1) 2.5s forwards;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOutRight {
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+        
+        /* Botón volver */
+        .back-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .back-btn:hover {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: #00ff88;
+            transform: translateX(-5px);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.5em; }
+            .post-card { padding: 25px; }
+            .post-title { font-size: 1.4em; }
+            .back-btn { top: 15px; left: 15px; padding: 10px 20px; }
+            .copy-notification { bottom: 20px; right: 20px; padding: 15px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <a href="../../PANEL_COMPLETO.html" class="back-btn">
+        ← Volver al Panel
+    </a>
+    
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo">🌴</div>
+            </div>
+            <h1>CAPTIONS COMPLETOS</h1>
+            <p class="subtitle">Posts para Instagram Feed</p>
+            <div class="badge">
+                <span class="badge-number">7</span>
+                <span>POSTS DISPONIBLES</span>
+            </div>
+        </div>
+
+        <!-- POST 1 -->
+        <div class="post-card" style="animation-delay: 0.1s">
+            <div class="post-header">
+                <div class="post-number">POST #1</div>
+                <div class="post-title">🚨 Anuncio Reprogramación</div>
+            </div>
+            <div class="post-content">
+⚠️ NUEVA FECHA - 11 DE ENERO 2026 ⚠️
+
+Por condiciones climáticas, reprogramamos la poolparty para mejor fecha. Nos vemos el DOMINGO 11 de Enero 2026 en Canning 🌴
+
+PFIRTER y SGALIA juntos después de años. Lineup histórico + pileta climatizada + zona chill.
+
+✅ Las entradas ya compradas SIGUEN VÁLIDAS
+✅ Si compraste para el 21/12, tu entrada sirve para el 11/01
+
+10 a 20hs · Caning, Zona Sur
+
+Link en bio 🎟️
+            </div>
+            <div class="hashtags">#dforest #poolparty #pfirter #sgalia #techno #house #reprogramacion #verano2026 #buenosaires #canning</div>
+            <button class="copy-btn" onclick="copiar(this)">
+                📋 Copiar Caption
+            </button>
+        </div>
+
+        <!-- POST 2 -->
+        <div class="post-card" style="animation-delay: 0.2s">
+            <div class="post-header">
+                <div class="post-number">POST #2</div>
+                <div class="post-title">🔥 Lineup Histórico</div>
+            </div>
+            <div class="post-content">
+LINEUP HISTÓRICO 🔥
+
+Primera vez juntos después de años:
+PFIRTER y SGALIA
+
+Dos leyendas del techno argentino que tomaron caminos diferentes se reencuentran para arrancar 2026.
+
++ RDKS B2B Nano
++ Nawe B2B Aleto
++ Nahu G B2B Braian Comparada
+
+House & Techno en vinilos
+Domingo 11 Enero 2026 · 10-20hs · Caning
+
+Entradas en bio 🎟️
+            </div>
+            <div class="hashtags">#dforest #pfirter #sgalia #techno #housemusic #vinyl #poolparty #lineup #buenosaires #verano2026</div>
+            <button class="copy-btn" onclick="copiar(this)">
+                📋 Copiar Caption
+            </button>
+        </div>
+
+        <!-- POST 3 -->
+        <div class="post-card" style="animation-delay: 0.3s">
+            <div class="post-header">
+                <div class="post-number">POST #3</div>
+                <div class="post-title">🌴 Qué incluye el evento</div>
+            </div>
+            <div class="post-content">
+¿QUÉ INCLUYE LA POOLPARTY? 🌴
+
+La primera del 2026 viene completa:
+
+✓ Pileta climatizada (para no pasar frío ni calor)
+✓ Sonido RCF de primera
+✓ Zona chill con sombra
+✓ Zona de acampe
+✓ Barras y comida
+✓ Vestuarios
+✓ Estacionamiento
+✓ Asistencia médica
+✓ Buena onda todo el día
+
+House & Techno de 10 a 20hs
+Al aire libre en Caning, Zona Sur
+
+Domingo 11 Enero 2026
+Link en bio 🎟️
+            </div>
+            <div class="hashtags">#dforest #poolparty #verano #outdoor #techno #house #canning #buenosaires #diadeevento</div>
+            <button class="copy-btn" onclick="copiar(this)">
+                📋 Copiar Caption
+            </button>
+        </div>
+
+        <!-- POST 4 -->
+        <div class="post-card" style="animation-delay: 0.4s">
+            <div class="post-header">
+                <div class="post-number">POST #4</div>
+                <div class="post-title">💰 Precios y Promos</div>
+            </div>
+            <div class="post-content">
+PRECIOS DFOREST POOLPARTY 💰
+
+🎟️ Individual: $30.000
+
+📦 PROMOS GRUPALES:
+→ 4 personas: $100.000 ($25.000 c/u)
+→ 4 personas + Gin Reventao: $120.000
+
+💡 DATO PRO:
+Comprando por transferencia pagás solo 2% de comisión
+vs 15% comprando online
+
+Domingo 11 Enero 2026
+10 a 20hs · Caning
+
+PFIRTER + SGALIA + más
+Link en bio 🎟️
+            </div>
+            <div class="hashtags">#dforest #poolparty #entradas #promos #pfirter #sgalia #techno #verano2026</div>
+            <button class="copy-btn" onclick="copiar(this)">
+                📋 Copiar Caption
+            </button>
+        </div>
+
+        <!-- POST 5 -->
+        <div class="post-card" style="animation-delay: 0.5s">
+            <div class="post-header">
+                <div class="post-number">POST #5</div>
+                <div class="post-title">📍 Cómo llegar</div>
+            </div>
+            <div class="post-content">
+¿CÓMO LLEGAR A DFOREST? 📍
+
+UBICACIÓN: Caning, Zona Sur
+A 40 minutos de CABA
+
+🚐 COMBI DESDE CAPITAL
+Sale de punto de encuentro en CABA
+(Info por DM)
+
+🚗 EN AUTO
+Estacionamiento disponible en el lugar
+Ruta 205 - Ezeiza
+
+🚕 TAXI/UBER/CABIFY
+Dirección: Caning, Ezeiza
+
+Domingo 11 Enero · 10 a 20hs
+
+PFIRTER + SGALIA
+House & Techno en vinilos
+
+Link en bio para entradas 🎟️
+            </div>
+            <div class="hashtags">#dforest #canning #comollegar #poolparty #ezeiza #buenosaires #techno</div>
+            <button class="copy-btn" onclick="copiar(this)">
+                📋 Copiar Caption
+            </button>
+        </div>
+
+        <!-- POST 6 -->
+        <div class="post-card" style="animation-delay: 0.6s">
+            <div class="post-header">
+                <div class="post-number">POST #6</div>
+                <div class="post-title">⏰ Cuenta regresiva</div>
+            </div>
+            <div class="post-content">
+⏰ FALTAN [X] DÍAS ⏰
+
+La primera poolparty del 2026 está a la vuelta de la esquina.
+
+PFIRTER y SGALIA se reencuentran después de años.
+House y Techno en vinilos de 10 a 20hs.
+
+Pileta climatizada + zona chill + lineup histórico
+Todo en un solo lugar.
+
+Domingo 11 Enero 2026
+Caning, Zona Sur
+
+¿Ya aseguraste tu lugar?
+Link en bio 🎟️
+
+#dforest #poolparty #countdown #pfirter #sgalia #techno #verano2026
+            </div>
+            <div class="hashtags">#dforest #poolparty #countdown #pfirter #sgalia #techno #verano2026</div>
+            <button class="copy-btn" onclick="copiar(this)">
+                📋 Copiar Caption
+            </button>
+        </div>
+
+        <!-- POST 7 -->
+        <div class="post-card" style="animation-delay: 0.7s">
+            <div class="post-header">
+                <div class="post-number">POST #7</div>
+                <div class="post-title">🎉 Última llamada</div>
+            </div>
+            <div class="post-content">
+🚨 ÚLTIMA LLAMADA 🚨
+
+Ya estamos en la semana del evento.
+Domingo 11 de Enero arrancamos 2026 como corresponde.
+
+PFIRTER + SGALIA
+Por primera vez juntos en años
+
++ RDKS B2B Nano
++ Nawe B2B Aleto  
++ Nahu G B2B Braian Comparada
+
+House & Techno en vinilos
+10 a 20hs al aire libre
+
+Pileta climatizada · Zona chill · Caning
+
+Asegurá tu lugar HOY
+Link en bio 🎟️
+
+#dforest #ultimallamada #poolparty #pfirter #sgalia #techno #house #verano2026 #buenosaires
+            </div>
+            <div class="hashtags">#dforest #ultimallamada #poolparty #pfirter #sgalia #techno #house #verano2026 #buenosaires</div>
+            <button class="copy-btn" onclick="copiar(this)">
+                📋 Copiar Caption
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function copiar(btn) {
+            const card = btn.closest('.post-card');
+            const content = card.querySelector('.post-content').textContent.trim();
+            const hashtags = card.querySelector('.hashtags').textContent.trim();
+            const fullText = content + '\n\n' + hashtags;
+            
+            navigator.clipboard.writeText(fullText).then(() => {
+                // Cambiar botón
+                btn.textContent = '✓ ¡Copiado!';
+                btn.classList.add('copied');
+                
+                // Mostrar notificación
+                const notification = document.createElement('div');
+                notification.className = 'copy-notification';
+                notification.textContent = '✓ Caption copiado al portapapeles';
+                document.body.appendChild(notification);
+                
+                // Resetear botón
+                setTimeout(() => {
+                    btn.innerHTML = '📋 Copiar Caption';
+                    btn.classList.remove('copied');
+                    notification.remove();
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>

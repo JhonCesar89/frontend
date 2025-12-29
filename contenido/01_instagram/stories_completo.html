@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DForest - Stories Completas</title>
+    <link rel="icon" href="../../assets/logos/dforest-logo.ico">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%); color: #ffffff; padding: 0; margin: 0; min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%); animation: pulse 8s ease-in-out infinite; pointer-events: none; z-index: 0; }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+        .container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+        .header { text-align: center; margin-bottom: 60px; animation: fadeInDown 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        .logo { font-size: 4em; filter: drop-shadow(0 10px 30px rgba(255, 102, 0, 0.5)); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .header h1 { font-size: 3.5em; font-weight: 800; background: linear-gradient(135deg, #ff6600 0%, #ffaa00 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin: 0; letter-spacing: -2px; line-height: 1.1; }
+        .subtitle { font-size: 1.2em; color: #aaa; margin-top: 10px; font-weight: 400; }
+        .badge { display: inline-flex; align-items: center; gap: 10px; background: rgba(255, 102, 0, 0.15); border: 2px solid #ff6600; padding: 12px 30px; border-radius: 30px; font-weight: 700; font-size: 1.1em; margin-top: 20px; animation: pulse-badge 2s ease-in-out infinite; box-shadow: 0 10px 40px rgba(255, 102, 0, 0.3); }
+        @keyframes pulse-badge { 0%, 100% { transform: scale(1); box-shadow: 0 10px 40px rgba(255, 102, 0, 0.3); } 50% { transform: scale(1.05); box-shadow: 0 15px 50px rgba(255, 102, 0, 0.5); } }
+        .badge-number { font-size: 1.4em; color: #ff6600; }
+        .story-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border-radius: 20px; padding: 30px; margin: 25px 0; border-left: 6px solid #ff6600; animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards; transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); position: relative; overflow: hidden; }
+        .story-card.urgent { border-left-color: #ffd700; }
+        .story-card:hover { transform: translateY(-8px) translateX(5px); box-shadow: 0 30px 60px rgba(255, 102, 0, 0.3), 0 0 0 1px rgba(255, 102, 0, 0.2); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
+        .story-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .story-number { background: linear-gradient(135deg, #ff6600, #ffaa00); color: #000; font-weight: 800; padding: 8px 16px; border-radius: 12px; font-size: 0.9em; box-shadow: 0 5px 20px rgba(255, 102, 0, 0.4); }
+        .story-number.urgent { background: linear-gradient(135deg, #ffd700, #ffaa00); }
+        .story-title { color: #ffaa00; font-size: 1.5em; font-weight: 700; flex: 1; }
+        .story-title.urgent { color: #ffd700; }
+        .story-content { line-height: 1.9; color: #e0e0e0; font-size: 1.05em; margin: 15px 0; white-space: pre-line; }
+        .story-note { background: rgba(0, 212, 255, 0.1); border-left: 3px solid #00d4ff; padding: 12px; margin-top: 15px; border-radius: 8px; font-size: 0.95em; color: #00d4ff; }
+        .copy-btn { background: linear-gradient(135deg, #ff6600 0%, #ffaa00 100%); color: #000; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 700; font-size: 0.95em; cursor: pointer; transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 10px 30px rgba(255, 102, 0, 0.4); margin-top: 15px; }
+        .copy-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(255, 102, 0, 0.6); }
+        .back-btn { position: fixed; top: 30px; left: 30px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 12px 25px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; z-index: 100; }
+        .back-btn:hover { background: rgba(255, 102, 0, 0.2); border-color: #ff6600; transform: translateX(-5px); }
+        .copy-notification { position: fixed; bottom: 40px; right: 40px; background: linear-gradient(135deg, #ff6600, #ffaa00); color: #000; padding: 20px 30px; border-radius: 15px; font-weight: 700; font-size: 1.1em; box-shadow: 0 20px 50px rgba(255, 102, 0, 0.5); z-index: 1000; animation: slideInRight 0.5s cubic-bezier(0.22, 1, 0.36, 1), slideOutRight 0.5s cubic-bezier(0.22, 1, 0.36, 1) 2.5s forwards; }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideOutRight { to { opacity: 0; transform: translateX(100px); } }
+        @media (max-width: 768px) { .header h1 { font-size: 2.5em; } .story-card { padding: 20px; } .story-title { font-size: 1.3em; } .back-btn { top: 15px; left: 15px; padding: 10px 20px; } }
+    </style>
+</head>
+<body>
+    <a href="../../PANEL_COMPLETO.html" class="back-btn">← Volver al Panel</a>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📸</div>
+            <h1>STORIES COMPLETAS</h1>
+            <p class="subtitle">Contenido para Instagram Stories</p>
+            <div class="badge"><span class="badge-number">15</span><span>STORIES DISPONIBLES</span></div>
+        </div>
+
+        <!-- STORY 0: NUEVA PROMO -->
+        <div class="story-card urgent" style="animation-delay: 0s">
+            <div class="story-header"><div class="story-number urgent">STORY #0</div><div class="story-title urgent">🔥 NUEVA PROMO (PUBLICAR HOY)</div></div>
+            <div class="story-content">🔥 PROMO NUEVA 🔥
+
+2 ENTRADAS x $40.000
+($20.000 cada una)
+
+Domingo 11 Enero
+PFIRTER + SGALIA
+
+Ahorrá $20.000
+Link en bio 🎟️</div>
+            <div class="story-note">💡 URGENTE: Publicar HOY. Usar colores dorado/amarillo. Destacar el ahorro.</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 1: NUEVA FECHA -->
+        <div class="story-card" style="animation-delay: 0.1s">
+            <div class="story-header"><div class="story-number">STORY #1</div><div class="story-title">⚠️ Nueva Fecha</div></div>
+            <div class="story-content">⚠️ NUEVA FECHA ⚠️
+
+Por condiciones climáticas
+nos movemos a mejor fecha
+
+11 DE ENERO 2026
+DOMINGO · 10 a 20hs
+
+PFIRTER + SGALIA
+Caning, Zona Sur
+
+Las entradas siguen válidas 🎟️
+Link en bio</div>
+            <div class="story-note">💡 Usar colores llamativos (naranja/rojo). Música: Pfirter - "Iron"</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 2: SORTEO -->
+        <div class="story-card" style="animation-delay: 0.2s">
+            <div class="story-header"><div class="story-number">STORY #2</div><div class="story-title">🎁 Sorteo FINALIZADO</div></div>
+            <div class="story-content">🎁 SORTEO FINALIZADO 🎁
+
+Gracias a todos por participar!
+
+Los ganadores fueron:
+🏆 1er lugar: [Nombre]
+🏆 2do lugar: [Nombre]
+🏆 3er lugar: [Nombre]
+
+Todavía podés conseguir tu entrada
+🔥 PROMO: 2x$40.000
+
+Link en bio 🎟️</div>
+            <div class="story-note">💡 Mencionar a los ganadores. Redirigir a la nueva promo.</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 3: CÓMO LLEGAR -->
+        <div class="story-card" style="animation-delay: 0.3s">
+            <div class="story-header"><div class="story-number">STORY #3</div><div class="story-title">📍 Cómo Llegar</div></div>
+            <div class="story-content">Toda la info para llegar 📍
+
+CANING, ZONA SUR
+🚐 Hay combi desde capital
+🚗 Estacionamiento en el lugar
+
+11/01/26 · DOMINGO · 10 a 20hs
+
+Deslizá ↑ para entradas</div>
+            <div class="story-note">💡 Foto de fondo: lugar/naturaleza. Música: Pfirter - "Technalog"</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 4: LINEUP -->
+        <div class="story-card" style="animation-delay: 0.4s">
+            <div class="story-header"><div class="story-number">STORY #4</div><div class="story-title">🔥 Lineup Histórico</div></div>
+            <div class="story-content">LINEUP HISTÓRICO 🔥
+
+PFIRTER ✦ SGALIA
+juntos después de años
+
++ RDKS B2B Nano
++ Nawe B2B Aleto
++ Nahu G B2B Braian Comparada
+
+House & Techno en vinilos 🎵
+
+11 ENERO 2026 · DOMINGO
+Link en bio 🎟️</div>
+            <div class="story-note">💡 Mencionar @dforest.arg @pfirter @jpsgalia. Música: Pfirter - "Iron"</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 5: QUÉ INCLUYE -->
+        <div class="story-card" style="animation-delay: 0.5s">
+            <div class="story-header"><div class="story-number">STORY #5</div><div class="story-title">✨ Qué Incluye</div></div>
+            <div class="story-content">La primera poolparty del 2026 incluye:
+
+✓ Pileta climatizada
+✓ Barra y comida
+✓ Al aire libre
+✓ Zona chill
+✓ Buena onda todo el día
+
+11/01 · 10 a 20hs
+Caning, Zona Sur
+
+¿Ya tenés tu entrada? 🎟️</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 6: DATO PRO -->
+        <div class="story-card" style="animation-delay: 0.6s">
+            <div class="story-header"><div class="story-number">STORY #6</div><div class="story-title">💰 Dato Pro</div></div>
+            <div class="story-content">DATO PRO 💰
+
+Comprá por TRANSFERENCIA
+y ahorrás comisión
+
+Solo pagás 2% 
+vs 15% online
+
+Mandame DM para info 💬</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 7: CUENTA REGRESIVA -->
+        <div class="story-card" style="animation-delay: 0.7s">
+            <div class="story-header"><div class="story-number">STORY #7</div><div class="story-title">⏰ Cuenta Regresiva</div></div>
+            <div class="story-content">⏰ FALTAN 13 DÍAS ⏰
+
+La primera del 2026
+post fiestas
+
+11 Enero
+Caning, Zona Sur
+
+¿Ya aseguraste tu lugar?
+
+Link ↑
+
+[Usar sticker de COUNTDOWN de Instagram]</div>
+            <div class="story-note">💡 Actualizar número de días diariamente. Usar sticker countdown con fecha 11/01/26.</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 8: PREGUNTA INTERACTIVA -->
+        <div class="story-card" style="animation-delay: 0.8s">
+            <div class="story-header"><div class="story-number">STORY #8</div><div class="story-title">❓ Pregunta Interactiva</div></div>
+            <div class="story-content">¿YA TENÉS TU ENTRADA?
+
+[Usar sticker de encuesta SI/NO]
+
+La primera del 2026 🌲
+11/01 en Caning</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 9: BENEFICIOS CLAVE -->
+        <div class="story-card" style="animation-delay: 0.9s">
+            <div class="story-header"><div class="story-number">STORY #9</div><div class="story-title">☀️ Beneficios Clave</div></div>
+            <div class="story-content">¿POR QUÉ ESTA POOLPARTY? ☀️
+
+✓ Domingo de día
+✓ Al aire libre
+✓ Pileta climatizada
+✓ Lineup histórico
+✓ Primera del 2026
+
+Todo en un solo lugar 🌴</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 10: PROMOS GRUPALES -->
+        <div class="story-card" style="animation-delay: 1s">
+            <div class="story-header"><div class="story-number">STORY #10</div><div class="story-title">👥 Promos Grupales</div></div>
+            <div class="story-content">VENÍ CON TU GRUPO 👥
+
+🔥 2 entradas: $40.000
+Promo 4 personas: $100.000
+($25.000 c/u)
+
+Promo 4 + Gin: $120.000
+
+Armen el grupo y aseguren
+sus lugares 🔥</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 11: REPOST ARTISTAS -->
+        <div class="story-card" style="animation-delay: 1.1s">
+            <div class="story-header"><div class="story-number">STORY #11</div><div class="story-title">🎧 Repost Artistas</div></div>
+            <div class="story-content">[Compartir post de @pfirter o @jpsgalia]
+
+Estos dos se juntan el 11/01
+en @dforest.arg 🔥
+
+Histórico</div>
+            <div class="story-note">💡 Repostear contenido de los artistas para generar engagement</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 12: ÚLTIMO LLAMADO -->
+        <div class="story-card" style="animation-delay: 1.2s">
+            <div class="story-header"><div class="story-number">STORY #12</div><div class="story-title">🚨 Último Llamado</div></div>
+            <div class="story-content">🚨 ÚLTIMA SEMANA 🚨
+
+Domingo 11 es el evento
+Quedan pocas entradas
+
+PFIRTER + SGALIA
+Caning · 10 a 20hs
+
+Asegurá tu lugar HOY
+Link ↑</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 13: DÍA DEL EVENTO - MAÑANA -->
+        <div class="story-card" style="animation-delay: 1.3s">
+            <div class="story-header"><div class="story-number">STORY #13</div><div class="story-title">🌞 Día del Evento - Mañana</div></div>
+            <div class="story-content">☀️ HOY ES EL DÍA ☀️
+
+DFOREST POOLPARTY
+Arranca a las 10:00hs
+
+📍 Caning, Zona Sur
+🎵 PFIRTER + SGALIA
+
+Nos vemos en la pileta 🌴💦</div>
+            <div class="story-note">💡 Publicar el 11/01 por la mañana temprano</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 14: INFO ÚLTIMA HORA -->
+        <div class="story-card" style="animation-delay: 1.4s">
+            <div class="story-header"><div class="story-number">STORY #14</div><div class="story-title">📢 Info Última Hora</div></div>
+            <div class="story-content">📢 INFO DE ÚLTIMO MOMENTO
+
+🚐 La combi sale a las [HORA]
+desde [LUGAR EN CABA]
+
+🚗 Estacionamiento disponible
+
+📍 Llegá temprano para disfrutar
+todo el día
+
+Nos vemos! 🌴</div>
+            <div class="story-note">💡 Publicar el 11/01 temprano con info práctica</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+
+        <!-- STORY 15: EN VIVO -->
+        <div class="story-card" style="animation-delay: 1.5s">
+            <div class="story-header"><div class="story-number">STORY #15</div><div class="story-title">🔴 En Vivo</div></div>
+            <div class="story-content">🔴 ESTAMOS EN VIVO 🔴
+
+La primera del 2026 ya arrancó
+
+[Fotos/videos del evento]
+[Mostrar pileta, gente, DJs]
+
+#DForest #Poolparty
+#Techno #House</div>
+            <div class="story-note">💡 Publicar durante el evento. Mostrar ambiente, lineup, pileta. Repostear contenido de asistentes.</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Story</button>
+        </div>
+    </div>
+
+    <script>
+        function copiar(btn) {
+            const card = btn.closest('.story-card');
+            const content = card.querySelector('.story-content').textContent.trim();
+            navigator.clipboard.writeText(content).then(() => {
+                btn.textContent = '✓ ¡Copiado!';
+                const notification = document.createElement('div');
+                notification.className = 'copy-notification';
+                notification.textContent = '✓ Story copiada al portapapeles';
+                document.body.appendChild(notification);
+                setTimeout(() => {
+                    btn.innerHTML = '📋 Copiar Story';
+                    notification.remove();
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>
