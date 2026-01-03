@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DForest - Calendario Completo</title>
+    <link rel="icon" href="../../assets/logos/dforest-logo.ico">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%); color: #ffffff; padding: 0; margin: 0; min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 20, 147, 0.1) 0%, transparent 50%); animation: pulse 8s ease-in-out infinite; pointer-events: none; z-index: 0; }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+        .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 60px 20px; }
+        .header { text-align: center; margin-bottom: 60px; animation: fadeInDown 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        .logo { font-size: 4em; filter: drop-shadow(0 10px 30px rgba(138, 43, 226, 0.5)); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .header h1 { font-size: 3.5em; font-weight: 800; background: linear-gradient(135deg, #8a2be2 0%, #ff1493 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin: 0; letter-spacing: -2px; line-height: 1.1; }
+        .subtitle { font-size: 1.2em; color: #aaa; margin-top: 10px; font-weight: 400; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
+        .timeline { position: relative; padding: 20px 0; }
+        .timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, #8a2be2, #ff1493); }
+        .week-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border-radius: 20px; padding: 30px; margin: 40px 0; width: 45%; position: relative; animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards; transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+        .week-card:nth-child(odd) { margin-left: 0; border-left: 6px solid #8a2be2; }
+        .week-card:nth-child(even) { margin-left: 55%; border-left: 6px solid #ff1493; }
+        .week-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 30px 60px rgba(138, 43, 226, 0.4); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .week-header { margin-bottom: 20px; }
+        .week-date { background: linear-gradient(135deg, #8a2be2, #ff1493); color: #fff; font-weight: 800; padding: 10px 20px; border-radius: 12px; display: inline-block; font-size: 1.1em; box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4); }
+        .week-title { color: #ff1493; font-size: 1.6em; font-weight: 700; margin-top: 15px; }
+        .week-content { line-height: 1.9; color: #e0e0e0; font-size: 1.05em; margin: 15px 0; }
+        .week-content ul { padding-left: 20px; margin: 10px 0; }
+        .week-content li { margin: 8px 0; }
+        .priority-badge { display: inline-block; background: rgba(255, 20, 147, 0.2); border: 2px solid #ff1493; padding: 5px 12px; border-radius: 15px; font-size: 0.85em; font-weight: 700; margin: 5px 5px 0 0; }
+        .priority-high { background: rgba(255, 0, 0, 0.2); border-color: #ff0000; color: #ff6666; animation: pulse-badge 2s ease-in-out infinite; }
+        @keyframes pulse-badge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .back-btn { position: fixed; top: 30px; left: 30px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 12px 25px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; z-index: 100; }
+        .back-btn:hover { background: rgba(138, 43, 226, 0.2); border-color: #8a2be2; transform: translateX(-5px); }
+        @media (max-width: 1024px) { .timeline::before { left: 20px; } .week-card { width: calc(100% - 60px); margin-left: 40px !important; } .header h1 { font-size: 2.5em; } }
+    </style>
+</head>
+<body>
+    <a href="../../PANEL_COMPLETO.html" class="back-btn">← Volver al Panel</a>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📅</div>
+            <h1>CALENDARIO COMPLETO</h1>
+            <p class="subtitle">Planificación estratégica hasta el evento</p>
+        </div>
+
+        <div class="timeline">
+            <div class="week-card" style="animation-delay: 0.1s">
+                <div class="week-header">
+                    <div class="week-date">HOY - 29 Dic</div>
+                    <div class="week-title">🚨 ACCIÓN INMEDIATA</div>
+                    <span class="priority-badge priority-high">URGENTE</span>
+                </div>
+                <div class="week-content">
+                    <strong>TAREAS HOY:</strong>
+                    <ul>
+                        <li>✅ Publicar nueva promo: 2x$40.000</li>
+                        <li>✅ Story anunciando promo</li>
+                        <li>✅ Actualizar precios en bio</li>
+                        <li>✅ Responder DMs pendientes</li>
+                        <li>⏰ <strong>Faltan 13 días!</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="week-card" style="animation-delay: 0.2s">
+                <div class="week-header">
+                    <div class="week-date">30-31 Dic</div>
+                    <div class="week-title">🎆 Pausa Año Nuevo</div>
+                    <span class="priority-badge">BAJA ACTIVIDAD</span>
+                </div>
+                <div class="week-content">
+                    <ul>
+                        <li>1 story cada 2 días (mínimo)</li>
+                        <li>Recordar fecha del evento</li>
+                        <li>31 Dic: NO publicar (día de fin de año)</li>
+                        <li>Responder DMs urgentes únicamente</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="week-card" style="animation-delay: 0.3s">
+                <div class="week-header">
+                    <div class="week-date">1-5 Ene</div>
+                    <div class="week-title">🔄 Reactivación Post Fiestas</div>
+                    <span class="priority-badge">MEDIA-ALTA</span>
+                </div>
+                <div class="week-content">
+                    <strong>Jueves 2:</strong> Story "Faltan 9 días" + Nueva promo<br>
+                    <strong>Viernes 3:</strong> Reel + Story beneficios<br>
+                    <strong>Sábado 4:</strong> Story lineup completo<br>
+                    <strong>Domingo 5:</strong> Pregunta interactiva<br><br>
+                    <ul>
+                        <li>Retomar ritmo fuerte de publicación</li>
+                        <li>2-3 stories diarias</li>
+                        <li>Responder DMs en menos de 2 horas</li>
+                        <li>Enfatizar nueva promo 2x$40K</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="week-card" style="animation-delay: 0.5s">
+                <div class="week-header">
+                    <div class="week-date">6-10 Ene</div>
+                    <div class="week-title">🔥 PUSH FINAL</div>
+                    <span class="priority-badge priority-high">CRÍTICO</span>
+                </div>
+                <div class="week-content">
+                    <strong>Lunes 6:</strong> Reel lineup + Story countdown<br>
+                    <strong>Martes 7:</strong> Post feed + Story promos<br>
+                    <strong>Miércoles 8:</strong> Reel precios + Stories urgencia<br>
+                    <strong>Jueves 9:</strong> Stories "48hs" + DMs intensivos<br>
+                    <strong>Viernes 10:</strong> MÁXIMA ACTIVIDAD
+                    <ul>
+                        <li>Stories "MAÑANA ES"</li>
+                        <li>Reel final</li>
+                        <li>Responder DMs constantemente</li>
+                        <li>Post recordatorio último momento</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="week-card" style="animation-delay: 0.6s">
+                <div class="week-header">
+                    <div class="week-date">11 Ene - DOMINGO</div>
+                    <div class="week-title">🌴 DÍA DEL EVENTO</div>
+                    <span class="priority-badge priority-high">EVENTO</span>
+                </div>
+                <div class="week-content">
+                    <strong>Mañana:</strong>
+                    <ul>
+                        <li>Story "HOY ES EL DÍA"</li>
+                        <li>Info de última hora</li>
+                        <li>Recordar horario y ubicación</li>
+                    </ul>
+                    <strong>Durante:</strong>
+                    <ul>
+                        <li>Stories en vivo del evento</li>
+                        <li>Mostrar lineup, pileta, ambiente</li>
+                        <li>Repostear contenido de asistentes</li>
+                    </ul>
+                    <strong>Noche:</strong>
+                    <ul>
+                        <li>Agradecimiento a todos</li>
+                        <li>Resumen del día</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

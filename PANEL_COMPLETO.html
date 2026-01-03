@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DForest - Panel Completo</title>
+    <link rel="icon" href="assets/logos/dforest-logo.ico">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a2e;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(0, 255, 136, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --accent-green: #00ff88;
+            --accent-blue: #00d4ff;
+            --accent-orange: #ff6600;
+            --accent-gold: #ffd700;
+            --border-color: rgba(0, 255, 136, 0.2);
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #e0e0e0;
+            --bg-card: rgba(0, 0, 0, 0.05);
+            --bg-card-hover: rgba(0, 255, 136, 0.2);
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --border-color: rgba(0, 255, 136, 0.4);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%); 
+            color: var(--text-primary); 
+            line-height: 1.6; 
+            font-size: 14px;
+            transition: background 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.08) 0%, transparent 50%);
+            animation: pulse-bg 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes pulse-bg {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+        
+        .header { 
+            background: rgba(0, 0, 0, 0.9); 
+            padding: 20px; 
+            text-align: center; 
+            border-bottom: 3px solid var(--accent-green); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.2);
+        }
+        
+        .header-content {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .logo-header {
+            font-size: 2em;
+            margin-right: 10px;
+            filter: drop-shadow(0 5px 15px rgba(0, 255, 136, 0.5));
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .header h1 { 
+            font-size: 2em; 
+            background: linear-gradient(45deg, var(--accent-green), var(--accent-blue)); 
+            -webkit-background-clip: text; 
+            background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            margin-bottom: 8px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        
+        .date-badge { 
+            display: inline-block; 
+            background: linear-gradient(45deg, #ff0055, var(--accent-orange)); 
+            padding: 5px 12px; 
+            border-radius: 12px; 
+            font-weight: bold; 
+            font-size: 0.9em;
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 0, 85, 0.4);
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-badge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 2px solid var(--accent-green);
+            border-radius: 20px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s;
+            color: var(--text-primary);
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: var(--bg-card-hover);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.3);
+        }
+        
+        .container { 
+            max-width: 1600px; 
+            margin: 0 auto; 
+            display: flex; 
+            min-height: calc(100vh - 80px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .sidebar { 
+            width: 220px; 
+            background: var(--bg-card); 
+            padding: 15px; 
+            border-right: 2px solid var(--accent-green); 
+            height: calc(100vh - 80px); 
+            overflow-y: auto; 
+            position: sticky; 
+            top: 80px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .sidebar h3 { 
+            color: var(--accent-green); 
+            margin: 12px 0 8px 0; 
+            font-size: 1em; 
+            border-bottom: 2px solid var(--accent-green); 
+            padding-bottom: 6px; 
+        }
+        
+        .nav-item { 
+            padding: 8px 10px; 
+            margin: 4px 0; 
+            background: var(--bg-card); 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            border-left: 3px solid transparent; 
+            font-size: 0.9em;
+            color: var(--text-primary);
+        }
+        
+        .nav-item:hover { 
+            background: var(--bg-card-hover); 
+            border-left-color: var(--accent-green); 
+            transform: translateX(3px); 
+        }
+        
+        .nav-item.active { 
+            background: linear-gradient(90deg, var(--bg-card-hover), transparent); 
+            border-left-color: var(--accent-green); 
+            font-weight: bold; 
+        }
+        
+        .main-content { 
+            flex: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
+            height: calc(100vh - 80px); 
+        }
+        
+        .section { 
+            display: none; 
+            animation: fadeIn 0.4s ease; 
+            background: var(--bg-card); 
+            border-radius: 10px; 
+            padding: 20px; 
+            margin-bottom: 15px; 
+            border: 1px solid var(--border-color); 
+            backdrop-filter: blur(10px);
+        }
+        
+        .section.active { display: block; }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(15px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .section h2 { 
+            color: var(--accent-green); 
+            margin-bottom: 15px; 
+            font-size: 1.6em; 
+            border-bottom: 2px solid var(--accent-green); 
+            padding-bottom: 8px; 
+        }
+        
+        .section h3 { 
+            color: var(--accent-blue); 
+            margin: 18px 0 10px 0; 
+            font-size: 1.3em; 
+        }
+        
+        .section h4 { 
+            color: var(--accent-orange); 
+            margin: 12px 0 6px 0; 
+            font-size: 1.1em; 
+        }
+        
+        .card { 
+            background: var(--bg-card); 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-left: 4px solid var(--accent-green); 
+            cursor: pointer; 
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .card:hover { 
+            background: var(--bg-card-hover); 
+            transform: translateX(3px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        }
+        
+        .highlight-box { 
+            background: rgba(255, 170, 0, 0.1); 
+            border-left: 4px solid var(--accent-orange); 
+            padding: 12px; 
+            margin: 12px 0; 
+            border-radius: 5px; 
+        }
+        
+        .success-box { 
+            background: rgba(0, 255, 136, 0.1); 
+            border-left: 4px solid var(--accent-green); 
+            padding: 12px; 
+            margin: 12px 0; 
+            border-radius: 5px; 
+        }
+        
+        .warning-box { 
+            background: rgba(255, 0, 85, 0.1); 
+            border-left: 4px solid #ff0055; 
+            padding: 12px; 
+            margin: 12px 0; 
+            border-radius: 5px; 
+        }
+        
+        .promo-box {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 170, 0, 0.15));
+            border: 3px solid var(--accent-gold);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+            animation: pulse-gold 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-gold {
+            0%, 100% { box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 15px 40px rgba(255, 215, 0, 0.5); }
+        }
+        
+        .promo-box h3 {
+            color: var(--accent-gold);
+            font-size: 1.5em;
+            margin: 0 0 10px 0;
+        }
+        
+        .grid-2 { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            margin: 12px 0; 
+        }
+        
+        .grid-3 { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 12px; 
+            margin: 12px 0; 
+        }
+        
+        .badge { 
+            display: inline-block; 
+            background: rgba(0, 255, 136, 0.2); 
+            padding: 3px 8px; 
+            border-radius: 10px; 
+            font-size: 0.8em; 
+            margin: 3px; 
+            border: 1px solid var(--accent-green); 
+        }
+        
+        /* Botón Ver Todos */
+        .view-all-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+            text-decoration: none;
+            margin: 15px 0;
+        }
+        
+        .view-all-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.5);
+        }
+        
+        .view-all-btn::after {
+            content: '→';
+            transition: transform 0.3s;
+        }
+        
+        .view-all-btn:hover::after {
+            transform: translateX(5px);
+        }
+        
+        .content-count {
+            background: rgba(0, 255, 136, 0.2);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 700;
+            border: 2px solid var(--accent-green);
+        }
+        
+        @media (max-width: 1024px) { 
+            .container { flex-direction: column; } 
+            .sidebar { 
+                width: 100%; 
+                position: static; 
+                height: auto; 
+                border-right: none; 
+                border-bottom: 2px solid var(--accent-green); 
+            } 
+            .main-content { height: auto; } 
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); }
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(45deg, var(--accent-green), var(--accent-blue)); 
+            border-radius: 4px; 
+        }
+        
+        .copy-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--accent-green);
+            color: #000;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 9999;
+            animation: fadeOut 2s forwards;
+            box-shadow: 0 20px 50px rgba(0, 255, 136, 0.5);
+        }
+        
+        @keyframes fadeOut {
+            0%, 70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        .finalized-badge {
+            display: inline-block;
+            background: rgba(255, 0, 85, 0.2);
+            border: 2px solid #ff0055;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 700;
+            color: #ff6666;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌓</button>
+        <div class="header-content">
+            <h1 style="font-size: 3em;"><img src="assets/logos/dforest-logo.ico" alt="DForest" class="logo-header" style="width: 70px; height: 70px; vertical-align: middle; margin-right: 20px; border-radius: 10px; background: white; padding: 8px; box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);">DFOREST POOLPARTY</h1>
+            <div class="date-badge">📅 DOMINGO 11 ENERO 2026 · 10-20hs · CANNING</div>
+        </div>
+        <div style="width: 50px;"></div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="nav-group">
+                <h3>📱 INSTAGRAM</h3>
+                <div class="nav-item active" onclick="showSection('inicio', this)">🏠 Inicio</div>
+                <div class="nav-item" onclick="showSection('stories', this)">📸 Stories</div>
+                <div class="nav-item" onclick="showSection('sorteo', this)">🎁 Sorteo</div>
+                <div class="nav-item" onclick="showSection('captions', this)">📝 Captions</div>
+                <div class="nav-item" onclick="showSection('dms', this)">💬 DMs</div>
+            </div>
+            <div class="nav-group">
+                <h3>🎧 LINEUP</h3>
+                <div class="nav-item" onclick="showSection('artistas', this)">🎤 Artistas</div>
+            </div>
+            <div class="nav-group">
+                <h3>🎬 CONTENIDO</h3>
+                <div class="nav-item" onclick="showSection('reels', this)">🎥 Reels</div>
+            </div>
+            <div class="nav-group">
+                <h3>📊 ESTRATEGIA</h3>
+                <div class="nav-item" onclick="showSection('calendario', this)">📅 Calendario</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- INICIO -->
+            <div id="inicio" class="section active">
+                <h2>🏠 Panel Completo DForest</h2>
+                
+                <div class="promo-box">
+                    <h3>🔥 PROMO ACTIVA HOY</h3>
+                    <p style="font-size:1.8em; font-weight:800; color: var(--accent-gold); margin:10px 0;">
+                        2 ENTRADAS x $40.000
+                    </p>
+                    <p style="font-size:1.2em; color: var(--text-secondary);">
+                        $20.000 por entrada · Ahorrás $20.000
+                    </p>
+                </div>
+                
+                <div class="warning-box">
+                    <h3>⚠️ ACCIÓN INMEDIATA HOY (29 DIC)</h3>
+                    <p><strong>HOY DEBES:</strong></p>
+                    <p>✅ Story anunciando promo 2x$40.000<br>
+                    ✅ Actualizar precios en bio<br>
+                    ✅ Responder DMs sobre nueva promo<br>
+                    ⏰ <strong>Quedan 13 días para el evento!</strong></p>
+                </div>
+                
+                <div class="success-box">
+                    <h3>✅ Info del Evento</h3>
+                    <p><strong>📅 Fecha:</strong> Domingo 11 Enero 2026<br>
+                    <strong>⏰ Horario:</strong> 10-20hs<br>
+                    <strong>📍 Lugar:</strong> Caning, Zona Sur<br>
+                    <strong>🎵 Lineup:</strong> PFIRTER + SGALIA + 3 B2Bs</p>
+                </div>
+                
+                <h3>💰 Precios Actualizados</h3>
+                <div class="grid-3">
+                    <div class="card">
+                        <h4>Individual</h4>
+                        <p style="font-size:1.5em;color:var(--accent-green)"><strong>$30.000</strong></p>
+                    </div>
+                    <div class="card" style="border-left-color: var(--accent-gold); background: rgba(255, 215, 0, 0.05);">
+                        <h4>2 Entradas 🔥 NUEVO</h4>
+                        <p style="font-size:1.5em;color:var(--accent-gold)"><strong>$40.000</strong></p>
+                        <p style="font-size:0.9em;color:var(--text-secondary)">$20.000 cada una</p>
+                    </div>
+                    <div class="card">
+                        <h4>4 Personas</h4>
+                        <p style="font-size:1.5em;color:var(--accent-green)"><strong>$100.000</strong></p>
+                    </div>
+                    <div class="card">
+                        <h4>4 + Gin</h4>
+                        <p style="font-size:1.5em;color:var(--accent-green)"><strong>$120.000</strong></p>
+                    </div>
+                </div>
+                
+                <h3>🚀 Cómo usar este panel</h3>
+                <div class="highlight-box">
+                    <p><strong>✅ Click para copiar:</strong> Haz click en cualquier tarjeta gris</p>
+                    <p><strong>✅ Ver contenido completo:</strong> Usa botones "Ver todos" para abrir páginas expandidas</p>
+                    <p><strong>✅ Navegación:</strong> Usa el menú lateral</p>
+                    <p><strong>✅ Tema:</strong> Cambia con botón 🌓 arriba</p>
+                </div>
+            </div>
+
+            <!-- STORIES -->
+            <div id="stories" class="section">
+                <h2>📸 Stories Principales</h2>
+                
+                <div class="highlight-box">
+                    <p><strong>📊 Contenido disponible:</strong></p>
+                    <p><span class="content-count">15 STORIES</span> listas para usar</p>
+                </div>
+                
+                <div class="card" onclick="copyCard(this)">
+                    <h4>STORY 1: Nueva Promo 🔥 (PUBLICAR HOY)</h4>
+                    <p>🔥 PROMO NUEVA 🔥<br><br>2 ENTRADAS x $40.000<br>($20.000 cada una)<br><br>Domingo 11 Enero<br>PFIRTER + SGALIA<br><br>Ahorrá $20.000<br>Link en bio 🎟️</p>
+                </div>
+
+                <div class="card" onclick="copyCard(this)">
+                    <h4>STORY 2: Cómo Llegar 📍</h4>
+                    <p>Toda la info para llegar 📍<br><br>CANING, ZONA SUR<br>🚐 Hay combi desde capital<br>🚗 Estacionamiento en el lugar<br><br>11/01/26 · DOMINGO · 10 a 20hs<br><br>Deslizá ↑ para entradas</p>
+                </div>
+
+                <div class="card" onclick="copyCard(this)">
+                    <h4>STORY 3: Lineup Histórico 🔥</h4>
+                    <p>LINEUP HISTÓRICO 🔥<br><br>PFIRTER ✦ SGALIA<br>juntos después de años<br><br>+ RDKS B2B Nano<br>+ Nawe B2B Aleto<br>+ Nahu G B2B Braian Comparada<br><br>House & Techno en vinilos 🎵<br><br>11 ENERO 2026 · DOMINGO<br>Link en bio 🎟️</p>
+                </div>
+                
+                <a href="contenido/01_instagram/stories_completo.html" class="view-all-btn">
+                    📸 Ver todas las Stories (15)
+                </a>
+            </div>
+
+            <!-- SORTEO -->
+            <div id="sorteo" class="section">
+                <h2>🎁 Sorteo DForest <span class="finalized-badge">FINALIZADO</span></h2>
+                
+                <div class="warning-box">
+                    <h3>✅ Sorteo Finalizado</h3>
+                    <p>El sorteo finalizó el 7 de Enero 2026</p>
+                    <p><strong>Ganadores anunciados en Instagram</strong></p>
+                </div>
+                
+                <div class="success-box">
+                    <h4>🏆 Premios entregados:</h4>
+                    <p>1er Premio: 2 Ingresos + Gin Reventao + Tónicas<br>
+                    2do Premio: 2 Ingresos + Lentes Cattos Eyewear<br>
+                    3er Premio: 2 Ingresos</p>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4>💡 Próximas acciones:</h4>
+                    <p>✅ Enfocarse en venta de entradas<br>
+                    ✅ Promocionar nueva promo 2x$40.000<br>
+                    ✅ Responder DMs de interesados</p>
+                </div>
+            </div>
+
+            <!-- CAPTIONS -->
+            <div id="captions" class="section">
+                <h2>📝 Captions para Feed</h2>
+                
+                <div class="highlight-box">
+                    <p><strong>📊 Contenido disponible:</strong></p>
+                    <p><span class="content-count">7 POSTS</span> completos con hashtags</p>
+                </div>
+
+                <div class="card" onclick="copyCard(this)">
+                    <h4>POST 1: Nueva Promo (PUBLICAR HOY)</h4>
+                    <p>🔥 NUEVA PROMO 🔥<br><br>2 ENTRADAS x $40.000<br>$20.000 cada una · Ahorrás $20.000<br><br>PFIRTER + SGALIA<br>Primera vez juntos en años<br><br>Domingo 11 Enero 2026<br>10-20hs · Caning<br><br>Link en bio 🎟️<br><br>#dforest #promo #pfirter #sgalia #poolparty</p>
+                </div>
+
+                <div class="card" onclick="copyCard(this)">
+                    <h4>POST 2: Lineup Histórico 🔥</h4>
+                    <p>LINEUP HISTÓRICO 🔥<br><br>Primera vez juntos después de años:<br>PFIRTER y SGALIA<br><br>+ RDKS B2B Nano<br>+ Nawe B2B Aleto<br>+ Nahu G B2B Braian Comparada<br><br>House & Techno en vinilos<br>Domingo 11 Enero 2026 · 10-20hs<br><br>#dforest #pfirter #sgalia #techno</p>
+                </div>
+                
+                <a href="contenido/01_instagram/captions_completo.html" class="view-all-btn">
+                    📝 Ver todos los Captions (7)
+                </a>
+            </div>
+
+            <!-- DMS -->
+            <div id="dms" class="section">
+                <h2>💬 Respuestas Rápidas para DM</h2>
+                
+                <div class="highlight-box">
+                    <p><strong>📊 Contenido disponible:</strong></p>
+                    <p><span class="content-count">10 RESPUESTAS</span> pre-escritas</p>
+                </div>
+
+                <div class="card" onclick="copyCard(this)">
+                    <h4>💰 Precios (CON NUEVA PROMO)</h4>
+                    <p>Hola! Los precios son:<br><br>🎟️ Individual: $30.000<br><br>🔥 PROMO NUEVA:<br>2 entradas x $40.000<br>($20.000 cada una)<br><br>📦 Grupales:<br>→ 4 personas: $100.000<br>→ 4 + Gin: $120.000</p>
+                </div>
+
+                <div class="card" onclick="copyCard(this)">
+                    <h4>📍 Ubicación</h4>
+                    <p>El evento es en Caning, Zona Sur<br>A 40 min de CABA<br><br>🚗 Hay estacionamiento<br>🚐 Sale combi desde capital<br><br>Horario: 10 a 20hs<br>Domingo 11 Enero 2026</p>
+                </div>
+
+                <div class="card" onclick="copyCard(this)">
+                    <h4>🎁 Sorteo (FINALIZADO)</h4>
+                    <p>Hola! El sorteo ya finalizó 🎁<br><br>¡Pero todavía podés conseguir tu entrada!<br><br>🔥 PROMO NUEVA:<br>2 entradas x $40.000<br><br>Link: [TU LINK]</p>
+                </div>
+                
+                <a href="contenido/01_instagram/dms_completo.html" class="view-all-btn">
+                    💬 Ver todas las Respuestas (10)
+                </a>
+            </div>
+
+            <!-- ARTISTAS -->
+            <div id="artistas" class="section">
+                <h2>🎧 Los Artistas</h2>
+                
+                <div class="success-box">
+                    <h3>🔥 LINEUP HISTÓRICO</h3>
+                    <p>Primera vez juntos después de años: <strong>PFIRTER + SGALIA</strong></p>
+                    <p>+ 3 B2B Sets épicos de la escena local</p>
+                </div>
+                
+                <h3 style="color: var(--accent-green); margin-top: 30px;">🌟 HEADLINERS</h3>
+                
+                <div class="card" style="border-left-color: var(--accent-green); padding: 20px;">
+                    <div style="display: flex; gap: 15px; align-items: start; margin-bottom: 15px;">
+                        <img src="assets/fotos_artistas/pfirter.jpg" alt="Pfirter" style="width: 80px; height: 80px; border-radius: 10px; object-fit: cover; box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4); flex-shrink: 0;">
+                        <div>
+                            <h3 style="color: var(--accent-green); margin-top: 0;">PFIRTER</h3>
+                            <p><strong>Argentino radicado en Barcelona · +20 años de carrera</strong></p>
+                        </div>
+                    </div>
+                    <p style="margin: 10px 0;">Fundador del sello MindTrip (2006). Una de las figuras más influyentes del techno argentino a nivel internacional.</p>
+                    <p><strong>Ha tocado en:</strong> Berghain, Tresor, Concrete, Awakenings, Time Warp</p>
+                    <p><strong>Lanzó música en:</strong> CLR, Figure, Mord, Stroboscopic Artefacts</p>
+                    <p><strong>Álbumes destacados:</strong> "The Empty Space" (2019), "Altered States"</p>
+                    <p><strong>Estilo:</strong> Techno oscuro y atmosférico con kicks potentes y texturas orgánicas</p>
+                    <p style="margin-top: 10px;">
+                        <a href="https://www.instagram.com/pfirter/?hl=es" target="_blank" style="color: var(--accent-green); text-decoration: none; font-weight: 600;">
+                            📷 Instagram: @pfirter
+                        </a>
+                    </p>
+                </div>
+                
+                <div class="card" style="border-left-color: var(--accent-blue); padding: 20px;">
+                    <div style="display: flex; gap: 15px; align-items: start; margin-bottom: 15px;">
+                        <img src="assets/fotos_artistas/sgalia.jpg" alt="Sgalia" style="width: 80px; height: 80px; border-radius: 10px; object-fit: cover; box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4); flex-shrink: 0;">
+                        <div>
+                            <h3 style="color: var(--accent-blue); margin-top: 0;">SGALIA (JP Sgalia)</h3>
+                            <p><strong>Leyenda del house y techno argentino</strong></p>
+                        </div>
+                    </div>
+                    <p style="margin: 10px 0;">Coleccionista obsesivo de vinilos y turntablista excepcional. Reconocido por su técnica impecable y selección musical única.</p>
+                    <p><strong>Ha compartido cabina con:</strong> Dubfire, John Acquaviva, Stephan Bodzin, Chris Fortier</p>
+                    <p><strong>Tours internacionales:</strong> Uruguay, Chile, Paraguay, Perú, Ecuador, España (La Macarena Club, City Hall), UK (Advent, Dirty Dozen)</p>
+                    <p><strong>Especialidad:</strong> Sets de 7+ horas completamente en vinilo</p>
+                    <p><strong>Estilo:</strong> Fusión de house clásico, minimal y techno con técnica de turntablismo</p>
+                    <p style="margin-top: 10px;">
+                        <a href="https://www.instagram.com/jpsgalia/" target="_blank" style="color: var(--accent-blue); text-decoration: none; font-weight: 600;">
+                            📷 Instagram: @jpsgalia
+                        </a>
+                    </p>
+                </div>
+                
+                <h3 style="color: var(--accent-orange); margin-top: 30px;">🔥 LOS B2B SETS</h3>
+                
+                <div class="grid-2">
+                    <div class="card" style="border-left-color: var(--accent-orange);">
+                        <div style="display: flex; gap: 12px; align-items: start; margin-bottom: 10px;">
+                            <img src="assets/fotos_artistas/rdks.jpg" alt="RDKS" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; box-shadow: 0 5px 15px rgba(255, 102, 0, 0.4); flex-shrink: 0;">
+                            <h4 style="color: var(--accent-orange); margin: 0;">RDKS (Luciano Endrigo)</h4>
+                        </div>
+                        <p><strong>Influencias familiares:</strong> Inner City, Depeche Mode, Crystal Waters, Robin S</p>
+                        <p><strong>2011:</strong> Conoció Cocoliche (momento clave en su carrera)</p>
+                        <p><strong>Venues:</strong> Cocoliche, Underclub, Crobar, Wax Club, The Bow</p>
+                        <p><strong>🔥 Highlight:</strong> Hizo el warm up para Sunil Sharpe en Detroit Classic Gallery</p>
+                        <p><strong>Sellos:</strong> Subsist, Armed, Green Screamer</p>
+                        <p style="margin-top: 10px;">
+                            <a href="https://www.instagram.com/_rdks/?hl=es" target="_blank" style="color: var(--accent-orange); text-decoration: none; font-weight: 600;">
+                                📷 @_rdks
+                            </a>
+                        </p>
+                    </div>
+                    
+                    <div class="card" style="border-left-color: var(--accent-orange);">
+                        <div style="display: flex; gap: 12px; align-items: start; margin-bottom: 10px;">
+                            <img src="assets/fotos_artistas/nano.jpg" alt="Nano" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; box-shadow: 0 5px 15px rgba(255, 102, 0, 0.4); flex-shrink: 0;">
+                            <h4 style="color: var(--accent-orange); margin: 0;">NANO</h4>
+                        </div>
+                        <p><strong>Fundador:</strong> Retórica Records</p>
+                        <p><strong>Residente en:</strong> D'Forest & Polyrithmia (AR), Default Series (CO)</p>
+                        <p><strong>Filosofía:</strong> "Techno eufórico y disruptivo - universo sin reglas, oscuro y directo"</p>
+                        <p><strong>Trayectoria:</strong> +8 años de carrera, tours por Europa y Latinoamérica</p>
+                        <p><strong>Sellos:</strong> Retórica, Concepto Hipnótico, Default Series, Space Travel, Unterwelt, BCR (digital y vinilo)</p>
+                        <p style="margin-top: 10px;">
+                            <a href="https://www.instagram.com/nano.arg/" target="_blank" style="color: var(--accent-orange); text-decoration: none; font-weight: 600;">
+                                📷 @nano.arg
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="card" style="border-left-color: var(--accent-blue);">
+                        <div style="display: flex; gap: 12px; align-items: start; margin-bottom: 10px;">
+                            <img src="assets/fotos_artistas/nawe.jpg" alt="Nawe" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4); flex-shrink: 0;">
+                            <h4 style="color: var(--accent-blue); margin: 0;">NAWE</h4>
+                        </div>
+                        <p><strong>Trayectoria:</strong> +10 años en la escena electrónica de Buenos Aires</p>
+                        <p><strong>Propuesta:</strong> Purista y versátil entre House y Techno</p>
+                        <p><strong>Firma personal:</strong> Sets en vinilo con selección curada y técnica precisa</p>
+                        <p><strong>Filosofía:</strong> "El groove es el lenguaje - construye puentes entre épocas y estilos"</p>
+                        <p><strong>Identidad:</strong> Underground, no sigue tendencias</p>
+                        <p style="margin-top: 10px;">
+                            <a href="https://www.instagram.com/nawe__d?igsh=MTllZW4xeHV3cWht" target="_blank" style="color: var(--accent-blue); text-decoration: none; font-weight: 600;">
+                                📷 @nawe__d
+                            </a>
+                        </p>
+                    </div>
+                    
+                    <div class="card" style="border-left-color: var(--accent-blue);">
+                        <div style="display: flex; gap: 12px; align-items: start; margin-bottom: 10px;">
+                            <img src="assets/fotos_artistas/Aleto.png" alt="Aletø" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4); flex-shrink: 0;">
+                            <h4 style="color: var(--accent-blue); margin: 0;">ALETØ (Alejandro Nicolás Gómez)</h4>
+                        </div>
+                        <p><strong>Inicio:</strong> Conectado con techno desde la adolescencia, empezó a pinchar a los 18</p>
+                        <p><strong>Estilo:</strong> Groove constante, combina oscuridad y toques melódicos</p>
+                        <p><strong>Rango:</strong> Del techno puro al groovy, guiños a Detroit y house</p>
+                        <p><strong>Influencias:</strong> Stranger, Ben Sims</p>
+                        <p><strong>Colectivo:</strong> Miembro del equipo Detekted</p>
+                        <p style="margin-top: 10px;">
+                            <a href="https://www.instagram.com/aleto.wav?igsh=MXUyeDg1NDhwNGRxcw==" target="_blank" style="color: var(--accent-blue); text-decoration: none; font-weight: 600;">
+                                📷 @aleto.wav
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="card">
+                        <div style="display: flex; gap: 12px; align-items: start; margin-bottom: 10px;">
+                            <img src="assets/fotos_artistas/Nahu_G.png" alt="Nahu G" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4); flex-shrink: 0;">
+                            <h4 style="margin: 0;">NAHU G</h4>
+                        </div>
+                        <p>DJ emergente de la escena local con un sonido fresco y energético. Su aproximación al techno combina elementos clásicos con toques contemporáneos, aportando una perspectiva renovada al lineup.</p>
+                        <p style="margin-top: 10px;">
+                            <a href="https://www.instagram.com/nahu.g.dj?igsh=YjR1bHVtMWVsazU3" target="_blank" style="color: var(--accent-green); text-decoration: none; font-weight: 600;">
+                                📷 @nahu.g.dj
+                            </a>
+                        </p>
+                    </div>
+                    
+                    <div class="card">
+                        <div style="display: flex; gap: 12px; align-items: start; margin-bottom: 10px;">
+                            <img src="assets/fotos_artistas/Braian_C.jpg" alt="Braian Comparada" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4); flex-shrink: 0;">
+                            <h4 style="margin: 0;">BRAIAN COMPARADA</h4>
+                        </div>
+                        <p>Completa el lineup con su visión personal del techno, aportando diversidad y profundidad al sonido del evento. Su set junto a Nahu G promete cerrar la jornada con energía.</p>
+                        <p style="margin-top: 10px;">
+                            <a href="https://www.instagram.com/braiancomparada?igsh=dTNmM2lvbHh6a3B4" target="_blank" style="color: var(--accent-green); text-decoration: none; font-weight: 600;">
+                                📷 @braiancomparada
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="highlight-box" style="margin-top: 30px;">
+                    <h4>💡 Por qué este lineup es histórico:</h4>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Reunión épica:</strong> Pfirter y Sgalia juntos después de años</li>
+                        <li><strong>Tres generaciones:</strong> Leyendas + escena consolidada + talento emergente</li>
+                        <li><strong>Todo en vinilo:</strong> House & Techno con técnica analógica</li>
+                        <li><strong>Química B2B:</strong> Duplas pensadas para sets explosivos</li>
+                    </ul>
+                </div>
+                
+                <div class="success-box" style="margin-top: 15px;">
+                    <h4>📝 Tips para promocionar:</h4>
+                    <p>✅ Destacar la reunión Pfirter-Sgalia como evento único<br>
+                    ✅ Mencionar la trayectoria internacional de ambos<br>
+                    ✅ Resaltar que TODO es en vinilo<br>
+                    ✅ Enfatizar los B2B sets (química entre artistas)<br>
+                    ✅ Usar @ de todos en posts y stories</p>
+                </div>
+                
+                <a href="contenido/01_instagram/artistas_completo.html" class="view-all-btn">
+                    🎧 Ver Biografías Completas (8 artistas)
+                </a>
+            </div>
+
+            <!-- REELS -->
+            <div id="reels" class="section">
+                <h2>🎬 Guiones para Reels</h2>
+                
+                <div class="highlight-box">
+                    <p><strong>📊 Contenido disponible:</strong></p>
+                    <p><span class="content-count">5 GUIONES</span> completos</p>
+                </div>
+
+                <div class="card">
+                    <h4>REEL 1: Lineup Reveal 🔥</h4>
+                    <p>Mostrar el lineup de forma dinámica con cortes rápidos. Duración: 15-20 seg.</p>
+                </div>
+
+                <div class="card">
+                    <h4>REEL 2: Qué Incluye 🌴</h4>
+                    <p>Mostrar todos los beneficios del evento. Duración: 20-25 seg.</p>
+                </div>
+
+                <div class="card">
+                    <h4>REEL 3: Precios 💰</h4>
+                    <p>Mostrar precios y promos (incluye nueva promo 2x$40K). Duración: 15 seg.</p>
+                </div>
+                
+                <a href="contenido/02_reels/reels_completo.html" class="view-all-btn">
+                    🎬 Ver todos los Guiones (5)
+                </a>
+            </div>
+
+            <!-- CALENDARIO -->
+            <div id="calendario" class="section">
+                <h2>📅 Calendario de Publicación</h2>
+                
+                <div class="warning-box">
+                    <h3>HOY (29 Diciembre) - ACCIÓN INMEDIATA</h3>
+                    <p>✅ Story nueva promo 2x$40.000<br>
+                    ✅ Actualizar bio con precios<br>
+                    ✅ Post feed anunciando promo<br>
+                    ✅ Responder DMs rápido<br>
+                    ⏰ Faltan solo 13 días para el evento!</p>
+                </div>
+                
+                <div class="card">
+                    <h4>📅 30-31 Dic: Pausa Año Nuevo</h4>
+                    <p>1 story cada 2 días. 31 dic: NO publicar (día de fin de año)</p>
+                </div>
+                
+                <div class="card">
+                    <h4>📅 1-5 Ene: Reactivación Post Fiestas</h4>
+                    <p>2-3 stories diarias. Retomar ritmo fuerte. Responder DMs &lt;2hs. Enfatizar nueva promo.</p>
+                </div>
+                
+                <div class="success-box">
+                    <h4>📅 6-10 Ene: PUSH FINAL 🔥</h4>
+                    <p>Máxima actividad. Reels + Stories diarias. DMs constantemente. <strong>Viernes 10: CRITICAL - Último día antes del evento</strong></p>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4>📅 11 Ene: DÍA DEL EVENTO 🎉</h4>
+                    <p>Stories desde temprano. Info de combi y llegada. Contenido en vivo todo el día.</p>
+                </div>
+                
+                <a href="contenido/03_estrategia/calendario_completo.html" class="view-all-btn">
+                    📅 Ver Calendario Completo
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle tema
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+        
+        // Cargar tema guardado
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        });
+        
+        // Mostrar sección
+        function showSection(sectionId, element) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.add('active');
+            }
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            if (element) {
+                element.classList.add('active');
+            }
+            document.querySelector('.main-content').scrollTo({top: 0, behavior: 'smooth'});
+        }
+        
+        // Copiar contenido de card
+        function copyCard(element) {
+            const text = element.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const notification = document.createElement('div');
+                notification.className = 'copy-notification';
+                notification.textContent = '✓ Texto copiado al portapapeles';
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 2000);
+            });
+        }
+    </script>
+</body>
+</html>

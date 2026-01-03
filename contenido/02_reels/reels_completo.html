@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DForest - Guiones Reels</title>
+    <link rel="icon" href="../../assets/logos/dforest-logo.ico">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%); color: #ffffff; padding: 0; margin: 0; min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(255, 0, 85, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 102, 0, 0.1) 0%, transparent 50%); animation: pulse 8s ease-in-out infinite; pointer-events: none; z-index: 0; }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+        .container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+        .header { text-align: center; margin-bottom: 60px; animation: fadeInDown 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        .logo { font-size: 4em; filter: drop-shadow(0 10px 30px rgba(255, 0, 85, 0.5)); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .header h1 { font-size: 3.5em; font-weight: 800; background: linear-gradient(135deg, #ff0055 0%, #ff6600 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin: 0; letter-spacing: -2px; line-height: 1.1; }
+        .subtitle { font-size: 1.2em; color: #aaa; margin-top: 10px; font-weight: 400; }
+        .badge { display: inline-flex; align-items: center; gap: 10px; background: rgba(255, 0, 85, 0.15); border: 2px solid #ff0055; padding: 12px 30px; border-radius: 30px; font-weight: 700; font-size: 1.1em; margin-top: 20px; animation: pulse-badge 2s ease-in-out infinite; box-shadow: 0 10px 40px rgba(255, 0, 85, 0.3); }
+        @keyframes pulse-badge { 0%, 100% { transform: scale(1); box-shadow: 0 10px 40px rgba(255, 0, 85, 0.3); } 50% { transform: scale(1.05); box-shadow: 0 15px 50px rgba(255, 0, 85, 0.5); } }
+        .badge-number { font-size: 1.4em; color: #ff0055; }
+        .reel-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border-radius: 20px; padding: 35px; margin: 30px 0; border-left: 6px solid #ff0055; animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards; transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); position: relative; overflow: hidden; }
+        .reel-card:hover { transform: translateY(-8px) translateX(5px); box-shadow: 0 30px 60px rgba(255, 0, 85, 0.3), 0 0 0 1px rgba(255, 0, 85, 0.2); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
+        .reel-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .reel-number { background: linear-gradient(135deg, #ff0055, #ff6600); color: #000; font-weight: 800; padding: 8px 16px; border-radius: 12px; font-size: 0.9em; box-shadow: 0 5px 20px rgba(255, 0, 85, 0.4); }
+        .reel-title { color: #ff0055; font-size: 1.8em; font-weight: 700; flex: 1; }
+        .reel-content { line-height: 1.9; color: #e0e0e0; font-size: 1.05em; margin: 15px 0; white-space: pre-line; }
+        .reel-tip { background: rgba(0, 255, 136, 0.1); border-left: 3px solid #00ff88; padding: 12px; margin-top: 15px; border-radius: 8px; font-size: 0.95em; color: #00ff88; }
+        .copy-btn { background: linear-gradient(135deg, #ff0055 0%, #ff6600 100%); color: #fff; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 700; font-size: 0.95em; cursor: pointer; transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 10px 30px rgba(255, 0, 85, 0.4); margin-top: 15px; }
+        .copy-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(255, 0, 85, 0.6); }
+        .back-btn { position: fixed; top: 30px; left: 30px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 12px 25px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; z-index: 100; }
+        .back-btn:hover { background: rgba(255, 0, 85, 0.2); border-color: #ff0055; transform: translateX(-5px); }
+        .copy-notification { position: fixed; bottom: 40px; right: 40px; background: linear-gradient(135deg, #ff0055, #ff6600); color: #fff; padding: 20px 30px; border-radius: 15px; font-weight: 700; font-size: 1.1em; box-shadow: 0 20px 50px rgba(255, 0, 85, 0.5); z-index: 1000; animation: slideInRight 0.5s cubic-bezier(0.22, 1, 0.36, 1), slideOutRight 0.5s cubic-bezier(0.22, 1, 0.36, 1) 2.5s forwards; }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideOutRight { to { opacity: 0; transform: translateX(100px); } }
+        @media (max-width: 768px) { .header h1 { font-size: 2.5em; } .reel-card { padding: 20px; } .reel-title { font-size: 1.4em; } .back-btn { top: 15px; left: 15px; padding: 10px 20px; } }
+    </style>
+</head>
+<body>
+    <a href="../../PANEL_COMPLETO.html" class="back-btn">← Volver al Panel</a>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🎬</div>
+            <h1>GUIONES REELS</h1>
+            <p class="subtitle">Scripts completos para Instagram Reels</p>
+            <div class="badge"><span class="badge-number">5</span><span>GUIONES LISTOS</span></div>
+        </div>
+
+        <div class="reel-card" style="animation-delay: 0.1s">
+            <div class="reel-header"><div class="reel-number">REEL #1</div><div class="reel-title">🔥 Lineup Reveal</div></div>
+            <div class="reel-content">CONCEPTO: Mostrar el lineup de forma dinámica
+
+TEXTO EN PANTALLA:
+"El lineup que estabas esperando 🔥"
+
+PFIRTER
+SGALIA
+[Pausa dramática]
+Primera vez juntos en años
+
++ RDKS B2B Nano
++ Nawe B2B Aleto
++ Nahu G B2B Braian Comparada
+
+11 ENERO 2026
+CANING
+
+MÚSICA: Track de Pfirter o Sgalia
+DURACIÓN: 15-20 segundos
+ESTILO: Cortes rápidos, tipografía bold</div>
+            <div class="reel-tip">💡 Tip: Usar transiciones con efecto glitch o neon</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Guion</button>
+        </div>
+
+        <div class="reel-card" style="animation-delay: 0.2s">
+            <div class="reel-header"><div class="reel-number">REEL #2</div><div class="reel-title">🌴 Qué Incluye</div></div>
+            <div class="reel-content">CONCEPTO: Mostrar todos los beneficios del evento
+
+TEXTO EN PANTALLA:
+"La poolparty completa 🌴"
+
+✓ Pileta climatizada
+✓ Sonido RCF
+✓ Zona chill
+✓ Barras y comida
+✓ Vestuarios
+✓ Estacionamiento
+✓ House & Techno todo el día
+
+DOMINGO 11 ENERO
+10-20hs
+
+MÚSICA: House melódico
+DURACIÓN: 20-25 segundos
+ESTILO: Mostrar cada item con iconos animados</div>
+            <div class="reel-tip">💡 Tip: Usar fotos/videos del lugar si tenés</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Guion</button>
+        </div>
+
+        <div class="reel-card" style="animation-delay: 0.3s">
+            <div class="reel-header"><div class="reel-number">REEL #3</div><div class="reel-title">💰 Precios</div></div>
+            <div class="reel-content">CONCEPTO: Mostrar precios y promos de forma clara
+
+TEXTO EN PANTALLA:
+"Conseguí tu entrada 🎟️"
+
+Individual: $30.000
+
+🔥 PROMO NUEVA
+2 entradas: $40.000
+($20.000 c/u)
+
+Grupal 4: $100.000
+4 + Gin: $120.000
+
+Link en bio ↑
+
+MÚSICA: Upbeat, energética
+DURACIÓN: 15 segundos
+ESTILO: Números grandes, colores llamativos</div>
+            <div class="reel-tip">💡 Tip: Destacar la promo nueva con efecto de brillo</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Guion</button>
+        </div>
+
+        <div class="reel-card" style="animation-delay: 0.4s">
+            <div class="reel-header"><div class="reel-number">REEL #4</div><div class="reel-title">📍 Cómo Llegar</div></div>
+            <div class="reel-content">CONCEPTO: Info práctica de acceso
+
+TEXTO EN PANTALLA:
+"Todo lo que necesitás saber 📍"
+
+CANING, ZONA SUR
+40 min desde CABA
+
+🚐 Combi desde capital
+🚗 Estacionamiento en el lugar
+🚕 Uber/Cabify disponible
+
+DOMINGO 11 ENERO
+10 a 20hs
+
+MÚSICA: Chill, informativa
+DURACIÓN: 20 segundos
+ESTILO: Mapa animado, íconos de transporte</div>
+            <div class="reel-tip">💡 Tip: Agregar mini-mapa o ubicación en Google Maps</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Guion</button>
+        </div>
+
+        <div class="reel-card" style="animation-delay: 0.5s">
+            <div class="reel-header"><div class="reel-number">REEL #5</div><div class="reel-title">⏰ Countdown Final</div></div>
+            <div class="reel-content">CONCEPTO: Generar urgencia pre-evento
+
+TEXTO EN PANTALLA:
+"ÚLTIMA SEMANA 🚨"
+
+PFIRTER + SGALIA
+Primera vez juntos en años
+
+Este DOMINGO
+11 Enero · 10-20hs
+
+House & Techno en vinilos
+Caning, Zona Sur
+
+¿Ya tenés tu entrada?
+Link en bio ↑
+
+MÚSICA: Build-up progresivo
+DURACIÓN: 15 segundos
+ESTILO: Cuenta regresiva animada, colores neón</div>
+            <div class="reel-tip">💡 Tip: Agregar timer animado o efecto de countdown</div>
+            <button class="copy-btn" onclick="copiar(this)">📋 Copiar Guion</button>
+        </div>
+    </div>
+
+    <script>
+        function copiar(btn) {
+            const card = btn.closest('.reel-card');
+            const content = card.querySelector('.reel-content').textContent.trim();
+            navigator.clipboard.writeText(content).then(() => {
+                btn.textContent = '✓ ¡Copiado!';
+                const notification = document.createElement('div');
+                notification.className = 'copy-notification';
+                notification.textContent = '✓ Guion copiado al portapapeles';
+                document.body.appendChild(notification);
+                setTimeout(() => {
+                    btn.innerHTML = '📋 Copiar Guion';
+                    notification.remove();
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DForest - Artistas Completos</title>
+    <link rel="icon" href="../../assets/logos/dforest-logo.ico">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%); color: #ffffff; padding: 0; margin: 0; min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0, 255, 136, 0.1) 0%, transparent 50%); animation: pulse 8s ease-in-out infinite; pointer-events: none; z-index: 0; }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+        .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 60px 20px; }
+        .header { text-align: center; margin-bottom: 60px; animation: fadeInDown 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        .logo { font-size: 4em; filter: drop-shadow(0 10px 30px rgba(138, 43, 226, 0.5)); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .header h1 { font-size: 3.5em; font-weight: 800; background: linear-gradient(135deg, #8a2be2 0%, #00ff88 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin: 0; letter-spacing: -2px; line-height: 1.1; }
+        .subtitle { font-size: 1.2em; color: #aaa; margin-top: 10px; font-weight: 400; }
+        .badge { display: inline-flex; align-items: center; gap: 10px; background: rgba(138, 43, 226, 0.15); border: 2px solid #8a2be2; padding: 12px 30px; border-radius: 30px; font-weight: 700; font-size: 1.1em; margin-top: 20px; animation: pulse-badge 2s ease-in-out infinite; box-shadow: 0 10px 40px rgba(138, 43, 226, 0.3); }
+        @keyframes pulse-badge { 0%, 100% { transform: scale(1); box-shadow: 0 10px 40px rgba(138, 43, 226, 0.3); } 50% { transform: scale(1.05); box-shadow: 0 15px 50px rgba(138, 43, 226, 0.5); } }
+        .badge-number { font-size: 1.4em; color: #8a2be2; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .section-title { font-size: 2em; color: #00ff88; margin: 40px 0 30px 0; text-align: center; font-weight: 800; }
+        
+        .artist-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border-radius: 20px; padding: 35px; margin: 30px 0; animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards; transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); position: relative; overflow: hidden; }
+        .artist-card.headliner { border-left: 6px solid #00ff88; }
+        .artist-card.support { border-left: 6px solid #8a2be2; }
+        .artist-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 30px 60px rgba(138, 43, 226, 0.4); }
+        
+        .artist-name { font-size: 2.2em; font-weight: 800; margin-bottom: 10px; }
+        .artist-name.headliner { color: #00ff88; }
+        .artist-name.support { color: #8a2be2; }
+        
+        .artist-subtitle { font-size: 1.2em; color: #aaa; font-weight: 600; margin-bottom: 20px; }
+        .artist-bio { line-height: 1.9; color: #e0e0e0; font-size: 1.05em; margin: 15px 0; }
+        .artist-bio p { margin: 12px 0; }
+        .artist-bio strong { color: #00ff88; }
+        
+        .artist-link { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #8a2be2, #00ff88); color: #000; padding: 12px 25px; border-radius: 25px; text-decoration: none; font-weight: 700; margin-top: 20px; transition: all 0.3s; box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3); }
+        .artist-link:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(138, 43, 226, 0.5); }
+        
+        .highlight-box { background: rgba(255, 170, 0, 0.1); border-left: 4px solid #ffaa00; padding: 20px; margin: 30px 0; border-radius: 12px; }
+        .highlight-box h3 { color: #ffaa00; margin-bottom: 15px; }
+        .highlight-box ul { margin-left: 20px; margin-top: 10px; }
+        .highlight-box li { margin: 8px 0; }
+        
+        .back-btn { position: fixed; top: 30px; left: 30px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 12px 25px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; z-index: 100; }
+        .back-btn:hover { background: rgba(138, 43, 226, 0.2); border-color: #8a2be2; transform: translateX(-5px); }
+        
+        @media (max-width: 768px) { .header h1 { font-size: 2.5em; } .artist-card { padding: 20px; } .artist-name { font-size: 1.8em; } .back-btn { top: 15px; left: 15px; padding: 10px 20px; } }
+    </style>
+</head>
+<body>
+    <a href="../../PANEL_COMPLETO.html" class="back-btn">← Volver al Panel</a>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🎧</div>
+            <h1>LINEUP COMPLETO</h1>
+            <p class="subtitle">Domingo 11 Enero 2026 · House & Techno</p>
+            <div class="badge"><span class="badge-number">8</span><span>ARTISTAS</span></div>
+        </div>
+
+        <h2 class="section-title">🌟 HEADLINERS</h2>
+
+        <div class="artist-card headliner" style="animation-delay: 0.1s">
+            <div style="display: flex; gap: 25px; align-items: start; flex-wrap: wrap;">
+                <img src="../../assets/fotos_artistas/Pfirter.jpg" alt="Pfirter" style="width: 200px; height: 200px; border-radius: 15px; object-fit: cover; box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4); transition: all0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3 class="artist-name headliner">PFIRTER</h3>
+                    <p class="artist-subtitle">Argentino radicado en Barcelona · +20 años de carrera</p>
+                </div>
+                <div class="artist-bio">
+                    <p>Una de las figuras más influyentes del techno argentino a nivel internacional. Fundador del sello <strong>MindTrip</strong> (2006), ha llevado el sonido argentino a los clubs más importantes del mundo.</p>
+                    <p><strong>Ha tocado en:</strong> Berghain (Berlín), Tresor, Concrete (París), Awakenings (Países Bajos), Time Warp (Alemania)</p>
+                    <p><strong>Lanzó música en:</strong> CLR, Figure, Mord, Stroboscopic Artefacts</p>                
+                    <p><strong>Álbumes destacados:</strong><br>
+                        · "The Empty Space" (2019)<br>
+                        · "Altered States"</p>
+                    <p><strong>Estilo:</strong> Techno oscuro y atmosférico con kicks potentes y texturas orgánicas. Conocido por sus sets hipnóticos que combinan lo analógico con lo digital.</p>
+            </div>
+            <a href="https://www.instagram.com/pfirter/?hl=es" class="artist-link" target="_blank">
+                📷 Instagram: @pfirter
+            </a>
+        </div>
+
+        <div class="artist-card headliner" style="animation-delay: 0.1s">
+            <div style="display: flex; gap: 25px; align-items: start; flex-wrap: wrap;">
+                <img src="../../assets/fotos_artistas/Sgalia.jpg" alt="Sgalia" style="width: 200px; height: 200px; border-radius: 15px; object-fit: cover; box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4); transition: all0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3 class="artist-name headliner">SGALIA (JP Sgalia)</h3>
+                    <p class="artist-subtitle">Leyenda del house y techno argentino</p>
+                </div>
+                <div class="artist-bio">
+                    <p>Coleccionista obsesivo de vinilos y turntablista excepcional. Reconocido por su técnica impecable y selección musical única que abarca décadas de house y techno.</p>
+                    
+                    <p><strong>Ha compartido cabina con:</strong> Dubfire, John Acquaviva, Stephan Bodzin, Chris Fortier</p>
+                    
+                    <p><strong>Tours internacionales:</strong><br>
+                    · Sudamérica: Uruguay, Chile, Paraguay, Perú, Ecuador<br>
+                    · Europa: España (La Macarena Club Barcelona, City Hall), UK (Advent, Dirty Dozen)</p>
+                    
+                    <p><strong>Especialidad:</strong> Sets de 7+ horas completamente en vinilo, demostrando un dominio técnico y musical que pocos pueden igualar.</p>
+                    
+                    <p><strong>Estilo:</strong> Fusión perfecta de house clásico, minimal y techno con técnica de turntablismo. Cada set es un viaje musical a través de la historia de la música electrónica.</p>
+                </div>
+                <a href="https://www.instagram.com/jpsgalia/" class="artist-link" target="_blank">
+                    📷 Instagram: @jpsgalia
+                </a>
+            </div>
+        </div>
+            <h2 class="section-title">🔥 B2B SETS</h2>
+
+        <div class="artist-card support" style="animation-delay: 0.3s">
+            <div style="display: flex; gap: 25px; align-items: start; flex-wrap: wrap;">
+                <img src="../../assets/fotos_artistas/Rdks.jpg" alt="RDKS" style="width: 200px; height: 200px; border-radius: 15px; object-fit: cover; box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3 class="artist-name support">RDKS (Luciano Endrigo)</h3>
+                </div>
+            </div>
+            </div>
+            <div class="artist-bio">
+                <p><strong>Influencias familiares:</strong> Creció escuchando Inner City, Depeche Mode, Crystal Waters, Robin S. La música electrónica siempre estuvo en su vida.</p>
+                
+                <p><strong>2011 - El momento clave:</strong> Conoció Cocoliche, el club que marcó un antes y después en su carrera y lo conectó profundamente con la escena underground porteña.</p>
+                
+                <p><strong>Venues donde ha tocado:</strong> Cocoliche, Underclub, Crobar, Wax Club, The Bow</p>
+                
+                <p><strong>🔥 Momento histórico:</strong> Hizo el warm up para Sunil Sharpe en Detroit Classic Gallery, consolidándose como una figura clave de la nueva generación.</p>
+                
+                <p><strong>Sellos discográficos:</strong> Subsist, Armed, Green Screamer</p>
+            </div>
+            <a href="https://www.instagram.com/_rdks/?hl=es" class="artist-link" target="_blank">
+                📷 Instagram: @_rdks
+            </a>
+        </div>
+
+        <div class="artist-card support" style="animation-delay: 0.4s">
+            <div style="display: flex; gap: 25px; align-items: start; flex-wrap: wrap;">
+                <img src="../../assets/fotos_artistas/Nano.jpg" alt="Nano" style="width: 200px; height: 200px; border-radius: 15px; object-fit: cover; box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3 class="artist-name support">NANO</h3>
+                </div>
+            </div>
+            <div class="artist-bio">
+                <p><strong>Fundador de Retórica Records</strong> - Un sello que representa su visión del techno sin concesiones.</p>
+                
+                <p><strong>Residente en:</strong><br>
+                · D'Forest & Polyrithmia (Argentina)<br>
+                · Default Series (Colombia)</p>
+                
+                <p><strong>Su filosofía:</strong> "Techno eufórico y disruptivo - un universo sin reglas, oscuro y directo". Esta frase resume perfectamente su sonido: potente, hipnótico y sin compromisos.</p>
+                
+                <p><strong>Trayectoria:</strong> Más de 8 años de carrera con tours extensos por Europa y Latinoamérica, llevando su sound a clubs y festivales underground.</p>
+                
+                <p><strong>Sellos donde ha lanzado:</strong> Retórica, Concepto Hipnótico, Default Series, Space Travel, Unterwelt, BCR (tanto digital como vinilo)</p>
+            </div>
+            <a href="https://www.instagram.com/nano.arg/" class="artist-link" target="_blank">
+                📷 Instagram: @nano.arg
+            </a>
+        </div>
+
+        <div class="artist-card support" style="animation-delay: 0.5s">
+            <div style="display: flex; gap: 25px; align-items: start; flex-wrap: wrap;">
+                <img src="../../assets/fotos_artistas/Nawe.jpg" alt="Nawe" style="width: 200px; height: 200px; border-radius: 15px; object-fit: cover; box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3 class="artist-name support">NAWE</h3>
+                </div>
+            </div>
+            <div class="artist-bio">
+                <p><strong>Trayectoria:</strong> Más de 10 años en la escena electrónica de Buenos Aires, construyendo una identidad sonora única y consistente.</p>
+                
+                <p><strong>Su propuesta:</strong> Purista y versátil entre House y Techno. No sigue tendencias, sigue su instinto musical.</p>
+                
+                <p><strong>Firma personal:</strong> Sets completamente en vinilo con selección curada meticulosamente y técnica precisa. Cada disco cuenta una historia.</p>
+                
+                <p><strong>Filosofía musical:</strong> "El groove es el lenguaje - construye puentes entre épocas y estilos". Esta conexión con la esencia del groove es lo que define sus sets.</p>
+                
+                <p><strong>Identidad:</strong> Profundamente underground, prefiere la autenticidad sobre la popularidad. No busca el mainstream.</p>
+            </div>
+            <a href="https://www.instagram.com/nawe__d?igsh=MTllZW4xeHV3cWht" class="artist-link" target="_blank">
+                📷 Instagram: @nawe__d
+            </a>
+        </div>
+
+        <div class="artist-card support" style="animation-delay: 0.6s">
+            <div style="display: flex; gap: 25px; align-items: start; flex-wrap: wrap;">
+                <img src="../../assets/fotos_artistas/Aleto.png" alt="Aletø" style="width: 200px; height: 200px; border-radius: 15px; object-fit: cover; box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3 class="artist-name support">ALETØ (Alejandro Nicolás Gómez)</h3>
+                </div>
+            </div>
+            <div class="artist-bio">
+                <p><strong>Sus inicios:</strong> Conectado con el techno desde la adolescencia, comenzó a pinchar a los 18 años y no ha parado desde entonces.</p>
+                
+                <p><strong>Su estilo:</strong> Groove constante que mantiene la pista en movimiento, combinando oscuridad profunda con toques melódicos que aportan emotividad.</p>
+                
+                <p><strong>Rango musical:</strong> Del techno más puro y duro al groovy, siempre con guiños a Detroit y el house. Su versatilidad es una de sus fortalezas.</p>
+                
+                <p><strong>Influencias principales:</strong> Stranger y Ben Sims - dos referencias del techno europeo que se reflejan en su sound.</p>
+                
+                <p><strong>Colectivo:</strong> Miembro activo del equipo Detekted, trabajando en conjunto para fortalecer la escena local.</p>
+            </div>
+            <a href="https://www.instagram.com/aleto.wav?igsh=MXUyeDg1NDhwNGRxcw==" class="artist-link" target="_blank">
+                📷 Instagram: @aleto.wav
+            </a>
+        </div>
+
+        <div class="artist-card support" style="animation-delay: 0.7s">
+            <div style="display: flex; gap: 25px; align-items: start; flex-wrap: wrap;">
+                <img src="../../assets/fotos_artistas/Nahu_G.png" alt="Nahu G" style="width: 200px; height: 200px; border-radius: 15px; object-fit: cover; box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3 class="artist-name support">NAHU G</h3>
+                </div>
+            </div>
+            <div class="artist-bio">
+                <p>DJ emergente de la escena local con un sonido fresco y energético que representa la nueva generación del techno argentino.</p>
+                
+                <p>Su aproximación al techno combina elementos clásicos con toques contemporáneos, logrando un balance perfecto entre respeto por las raíces y visión futurista.</p>
+                
+                <p>Aporta una perspectiva renovada al lineup, demostrando que la escena argentina sigue generando talento de calidad.</p>
+            </div>
+            <a href="https://www.instagram.com/nahu.g.dj?igsh=YjR1bHVtMWVsazU3" class="artist-link" target="_blank">
+                📷 Instagram: @nahu.g.dj
+            </a>
+        </div>
+
+        <div class="artist-card support" style="animation-delay: 0.8s">
+            <div style="display: flex; gap: 25px; align-items: start; flex-wrap: wrap;">
+                <img src="../../assets/fotos_artistas/Braian_C.jpg" alt="Braian Comparada" style="width: 200px; height: 200px; border-radius: 15px; object-fit: cover; box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3 class="artist-name support">BRAIAN COMPARADA</h3>
+                </div>
+            </div>
+            <div class="artist-bio">
+                <p>Completa el lineup con su visión personal del techno, aportando diversidad y profundidad al sonido del evento.</p>
+                
+                <p>Su set junto a Nahu G promete cerrar la jornada con energía y frescura, demostrando que el futuro del techno argentino está asegurado.</p>
+                
+                <p>Representa el espíritu colaborativo de la escena, donde artistas emergentes y consolidados comparten cabina.</p>
+            </div>
+            <a href="https://www.instagram.com/braiancomparada?igsh=dTNmM2lvbHh6a3B4" class="artist-link" target="_blank">
+                📷 Instagram: @braiancomparada
+            </a>
+        </div>
+
+        <div class="highlight-box">
+            <h3>💡 Por qué este lineup es histórico</h3>
+            <ul>
+                <li><strong>Reunión épica:</strong> Pfirter y Sgalia juntos después de años tomando caminos separados. Esta es LA oportunidad de verlos compartir cabina nuevamente.</li>
+                <li><strong>Tres generaciones:</strong> Leyendas internacionales + escena consolidada + talento emergente. Un verdadero retrato de la escena argentina.</li>
+                <li><strong>Todo en vinilo:</strong> House & Techno con técnica analógica pura. Sin laptops, sin pantallas - solo vinilos, técnica y selección.</li>
+                <li><strong>Química B2B:</strong> Duplas pensadas específicamente para crear sets explosivos y complementarios.</li>
+                <li><strong>10 horas non-stop:</strong> De 10am a 20hs, un viaje musical completo desde el warm-up hasta el cierre.</li>
+            </ul>
+        </div>
+
+        <div class="highlight-box" style="border-left-color: #00ff88; background: rgba(0, 255, 136, 0.1);">
+            <h3 style="color: #00ff88;">📝 Tips para promocionar a los artistas</h3>
+            <ul>
+                <li>✅ Destacar la reunión Pfirter-Sgalia como evento único e irrepetible</li>
+                <li>✅ Mencionar la trayectoria internacional de ambos headliners</li>
+                <li>✅ Resaltar que TODO el evento es en vinilo (diferenciador clave)</li>
+                <li>✅ Enfatizar los B2B sets y la química entre artistas</li>
+                <li>✅ Usar @ de todos en posts y stories para maximizar alcance</li>
+                <li>✅ Compartir tracks específicos de cada artista en stories</li>
+                <li>✅ Crear contenido sobre la historia de cada artista</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
